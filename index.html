@@ -505,7 +505,7 @@ body{font-family:'Nunito',sans-serif;background:var(--warm);color:var(--text);mi
       <line x1="56" y1="62" x2="70" y2="63" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
     </svg>
   </div>
-  <h2>Olá, aventureiro! 👋</h2>
+  <h2>Olá, explorador! 👋</h2>
   <p>Qual é o seu nome?</p>
   <input type="text" id="name-input" placeholder="Escreva seu nome aqui" maxlength="30" autocomplete="off" autocorrect="off" spellcheck="false"/>
   <button id="start-btn" onclick="startGame()">Vamos lá! 🚀</button>
@@ -947,7 +947,7 @@ function registerAnswer(ok){answered++;if(ok)correct++;if(ok){playOk();setLion('
 // ═══ NAME ═══
 document.getElementById('name-input').addEventListener('keydown',function(e){if(e.key==='Enter')startGame();});
 function startGame(){
-  var n=document.getElementById('name-input').value.trim()||'Aventureiro';
+  var n=document.getElementById('name-input').value.trim()||'explorador';
   playerName=n;
   document.getElementById('name-screen').style.display='none';
   document.getElementById('main-content').style.display='block';
