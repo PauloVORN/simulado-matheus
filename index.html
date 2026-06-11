@@ -232,18 +232,6 @@ body{font-family:'Nunito',sans-serif;background:var(--warm);color:var(--text);mi
 #tip-global.show{display:block;animation:fade-in .18s ease;-webkit-animation:fade-in .18s ease;}
 #tip-global strong{color:#FFD54F;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;}
 
-/* ── METACOGNIÇÃO ── */
-.meta-wrap{margin-top:14px;padding-top:12px;border-top:1.5px dashed rgba(124,77,255,.2);}
-.meta-label{font-size:.8rem;font-weight:800;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
-.meta-row{display:flex;gap:8px;flex-wrap:wrap;}
-.meta-btn{flex:1;min-width:80px;border:2px solid transparent;border-radius:12px;padding:9px 6px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;cursor:pointer;transition:.18s;-webkit-transition:.18s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;gap:5px;}
-.meta-btn.g{background:rgba(67,160,71,.1);border-color:rgba(67,160,71,.3);color:#2E7D32;}
-.meta-btn.y{background:rgba(255,184,48,.1);border-color:rgba(255,184,48,.4);color:#7B5200;}
-.meta-btn.r{background:rgba(229,57,53,.08);border-color:rgba(229,57,53,.3);color:#B71C1C;}
-.meta-btn:hover:not(.meta-done){opacity:.8;transform:scale(1.03);-webkit-transform:scale(1.03);}
-.meta-btn.meta-selected{font-size:.9rem;opacity:1;}
-.meta-btn.meta-done{pointer-events:none;}
-.meta-response{margin-top:8px;font-size:.85rem;font-weight:700;color:var(--teal);display:none;animation:fade-in .3s ease;-webkit-animation:fade-in .3s ease;}
 
 /* ── TF ── */
 .tf-row{display:flex;gap:10px;}
@@ -352,7 +340,6 @@ body{font-family:'Nunito',sans-serif;background:var(--warm);color:var(--text);mi
   .tf-row{gap:8px;}
   .tf-btn{padding:13px 6px;font-size:.92rem;}
   .opt-btn{min-height:54px;font-size:1rem;} /* bigger touch target */
-  .meta-btn{min-height:48px;font-size:.9rem;}
   #scorebar{padding:10px 12px;gap:8px;}
   #scorebar .pts{font-size:1.3rem;}
 }
@@ -708,8 +695,8 @@ body{font-family:'Nunito',sans-serif;background:var(--warm);color:var(--text);mi
       <text x="60" y="28" font-size="18" opacity=".4">❤️</text>
       <text x="200" y="20" font-size="14" opacity=".35">💛</text>
       <text x="360" y="25" font-size="16" opacity=".4">💚</text>
-      <!-- 5 people silhouettes holding hands -->
-      <g transform="translate(100,15)">
+      <!-- 5 people silhouettes holding hands — centered in 480px viewBox, group width ~166px so offset = (480-166)/2 = 157 -->
+      <g transform="translate(157,15)">
         <!-- person 1 -->
         <circle cx="0" cy="0" r="9" fill="#7C4DFF"/>
         <rect x="-7" y="9" width="14" height="20" rx="7" fill="#7C4DFF"/>
@@ -1115,34 +1102,6 @@ document.addEventListener('touchstart',function(e){
   if(!e.target.closest('.tip'))hideTip();
 },{passive:true});
 
-// ═══ METACOGNIÇÃO ═══
-var metaResponses={
-  g:['Incrível! Confiança é o primeiro passo! 🌟','Arrasou! Sente-se bem é sinal de aprendizado! 🦁','Ótimo! Esse conteúdo entrou na sua cabeça! 🎉'],
-  y:['Tudo bem! Revisar é parte do aprendizado! 📚','Normal! Cada revisão deixa mais claro! 🌱','Que honesto! Continue praticando! 💪'],
-  r:['Boa percepção! Releia o resumo com calma. 📖','Não desanima! Faz parte. O leãozinho acredita em você! 🦁','Reconhecer que não entendeu é muito inteligente! Revise! 🔍'],
-};
-function answerMeta(btn, type, respId){
-  var wrap=btn.closest('.meta-wrap');
-  wrap.querySelectorAll('.meta-btn').forEach(function(b){b.classList.add('meta-done');b.classList.remove('meta-selected');});
-  btn.classList.add('meta-selected');
-  var pool=metaResponses[type];
-  var resp=document.getElementById(respId);
-  resp.textContent=pool[Math.floor(Math.random()*pool.length)];
-  resp.style.display='block';
-}
-
-function mkMeta(id){
-  return '<div class="meta-wrap">'
-    +'<div class="meta-label">Como você se sentiu com essa resposta?</div>'
-    +'<div class="meta-row">'
-    +'<button class="meta-btn g" onclick="answerMeta(this,\'g\',\'mr-'+id+'\')">🟢 Entendi bem</button>'
-    +'<button class="meta-btn y" onclick="answerMeta(this,\'y\',\'mr-'+id+'\')">🟡 Mais ou menos</button>'
-    +'<button class="meta-btn r" onclick="answerMeta(this,\'r\',\'mr-'+id+'\')">🔴 Não entendi</button>'
-    +'</div>'
-    +'<div class="meta-response" id="mr-'+id+'"></div>'
-    +'</div>';
-}
-
 // ═══ RENDER ═══
 function mkCard(html){var d=document.createElement('div');d.className='card';d.innerHTML=html;return d;}
 function qHead(n,t){
@@ -1174,8 +1133,6 @@ function answerMC(prefix,qi,oi,data){
     showExplain(prefix+qi);
     if(sectionScores[prefix]) wrongAnswers.push({section:sectionScores[prefix].label, q:q.q, a:q.opts[q.answer]});
   }
-  var mw=document.getElementById('meta-'+prefix+qi);
-  if(mw)mw.style.display='block';
   registerAnswer(ok);
 }
 // expose wrappers
@@ -1193,8 +1150,7 @@ function renderMCSection(cid,data,prefix,fn){
             +'</button>';
     }).join('');
     var explain=q.explain?mkExplainBox(q.explain,prefix+i):'';
-    var metaDiv='<div id="meta-'+prefix+i+'" style="display:none">'+mkMeta(prefix+i)+'</div>';
-    c.appendChild(mkCard(qHead(i+1,q.q)+'<div class="opts">'+opts+'</div>'+explain+metaDiv));
+    c.appendChild(mkCard(qHead(i+1,q.q)+'<div class="opts">'+opts+'</div>'+explain));
   });
 }
 
@@ -1290,8 +1246,7 @@ function renderSim(){
             +'</button>';
     }).join('');
     var explain=q.explain?mkExplainBox(q.explain,'sim'+i):'';
-    var metaDiv='<div id="meta-sim'+i+'" style="display:none">'+mkMeta('sim'+i)+'</div>';
-    c.appendChild(mkCard(qHead(i+1,q.q)+'<div class="opts">'+opts+'</div>'+explain+metaDiv));
+    c.appendChild(mkCard(qHead(i+1,q.q)+'<div class="opts">'+opts+'</div>'+explain));
   });
 }
 
