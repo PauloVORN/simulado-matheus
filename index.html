@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulado de História — Muitas Pessoas Juntas</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sun:#FFB830;--sky:#4FC3F7;--grass:#66BB6A;--warm:#FFF8EE;
+  --card:#FFFFFF;--purple:#7C4DFF;--pink:#FF6B9D;--teal:#00BCD4;
+  --text:#2D3142;--sub:#6B7280;--correct:#43A047;--wrong:#E53935;
+  --shadow:0 4px 20px rgba(0,0,0,.10);--radius:22px;
+  --max:860px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--warm);color:var(--text);min-height:100vh;padding-bottom:60px;position:relative;overflow-x:hidden;}
+
+/* ── RESPONSIVE CONTAINER ── */
+.container{width:100%;max-width:var(--max);margin:0 auto;padding:0 16px;}
+
+/* ── SKY ── */
+.sky-band{background:linear-gradient(180deg,#B3E5FC 0%,#E1F5FE 60%,var(--warm) 100%);padding:28px 0 0;position:relative;overflow:hidden;min-height:190px;}
+.cloud{position:absolute;background:#fff;border-radius:50px;opacity:.85;}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%;}
+.cloud-a{width:80px;height:28px;top:22px;left:8%;animation:cloud-drift 18s linear infinite;-webkit-animation:cloud-drift 18s linear infinite;}
+.cloud-a::before{width:36px;height:36px;top:-18px;left:12px;}
+.cloud-a::after{width:28px;height:28px;top:-12px;left:36px;}
+.cloud-b{width:60px;height:22px;top:40px;right:12%;animation:cloud-drift 24s linear infinite reverse;-webkit-animation:cloud-drift 24s linear infinite reverse;}
+.cloud-b::before{width:28px;height:28px;top:-14px;left:8px;}
+.cloud-b::after{width:22px;height:22px;top:-10px;left:28px;}
+.cloud-c{width:50px;height:18px;top:16px;left:55%;animation:cloud-drift 20s linear infinite;-webkit-animation:cloud-drift 20s linear infinite;}
+.cloud-c::before{width:22px;height:22px;top:-12px;left:6px;}
+.cloud-c::after{width:18px;height:18px;top:-9px;left:22px;}
+@-webkit-keyframes cloud-drift{0%{-webkit-transform:translateX(0)}50%{-webkit-transform:translateX(18px)}100%{-webkit-transform:translateX(0)}}
+@keyframes cloud-drift{0%{transform:translateX(0)}50%{transform:translateX(18px)}100%{transform:translateX(0)}}
+.sun{position:absolute;top:14px;right:22px;width:54px;height:54px;background:radial-gradient(circle at 40% 40%,#FFE082,#FFB830);border-radius:50%;box-shadow:0 0 0 8px rgba(255,184,48,.2),0 0 0 16px rgba(255,184,48,.1);animation:sun-pulse 4s ease-in-out infinite;-webkit-animation:sun-pulse 4s ease-in-out infinite;}
+@-webkit-keyframes sun-pulse{0%,100%{box-shadow:0 0 0 8px rgba(255,184,48,.2),0 0 0 16px rgba(255,184,48,.1)}50%{box-shadow:0 0 0 12px rgba(255,184,48,.25),0 0 0 24px rgba(255,184,48,.1)}}
+@keyframes sun-pulse{0%,100%{box-shadow:0 0 0 8px rgba(255,184,48,.2),0 0 0 16px rgba(255,184,48,.1)}50%{box-shadow:0 0 0 12px rgba(255,184,48,.25),0 0 0 24px rgba(255,184,48,.1)}}
+
+/* ── LION ── */
+.mascot-wrap{display:flex;flex-direction:column;align-items:center;position:relative;z-index:2;margin-top:8px;}
+.lion{width:100px;height:100px;position:relative;animation:lion-idle 3s ease-in-out infinite;-webkit-animation:lion-idle 3s ease-in-out infinite;}
+@-webkit-keyframes lion-idle{0%,100%{-webkit-transform:translateY(0)}50%{-webkit-transform:translateY(-6px)}}
+@keyframes lion-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.lion.celebrate{animation:lion-cel .45s ease-in-out infinite alternate!important;-webkit-animation:lion-cel .45s ease-in-out infinite alternate!important;}
+@-webkit-keyframes lion-cel{0%{-webkit-transform:translateY(0) rotate(-8deg) scale(1.05)}100%{-webkit-transform:translateY(-10px) rotate(8deg) scale(1.1)}}
+@keyframes lion-cel{0%{transform:translateY(0) rotate(-8deg) scale(1.05)}100%{transform:translateY(-10px) rotate(8deg) scale(1.1)}}
+.lion.think{animation:lion-think 1.5s ease-in-out infinite!important;-webkit-animation:lion-think 1.5s ease-in-out infinite!important;}
+@-webkit-keyframes lion-think{0%,100%{-webkit-transform:translateY(0) rotate(-3deg)}50%{-webkit-transform:translateY(-3px) rotate(3deg)}}
+@keyframes lion-think{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-3px) rotate(3deg)}}
+.lion-svg{width:100%;height:100%}
+.speech{background:#fff;border-radius:16px;padding:8px 16px;font-family:'Fredoka One',cursive;font-size:.95rem;color:var(--purple);box-shadow:var(--shadow);position:relative;margin-top:8px;text-align:center;min-width:160px;max-width:280px;transition:all .3s ease;}
+.speech::before{content:'';position:absolute;top:-10px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-bottom-color:#fff;}
+
+/* ── NAME SCREEN ── */
+#name-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#B3E5FC,#E8F5E9,#FFF8EE);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center;}
+#name-screen h2{font-family:'Fredoka One',cursive;font-size:clamp(1.5rem,5vw,2rem);color:var(--purple);margin-top:16px;margin-bottom:6px;line-height:1.2;}
+#name-screen p{font-size:1rem;color:var(--sub);font-weight:700;margin-bottom:28px}
+#name-input{font-family:'Fredoka One',cursive;font-size:1.4rem;color:var(--text);border:3px solid var(--sky);border-radius:16px;padding:14px 20px;width:100%;max-width:320px;outline:none;text-align:center;background:#fff;transition:border-color .2s;-webkit-appearance:none;}
+#name-input:focus{border-color:var(--purple)}
+#start-btn{margin-top:20px;background:linear-gradient(135deg,var(--purple),#B388FF);color:#fff;border:none;border-radius:16px;padding:16px 44px;font-family:'Fredoka One',cursive;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 18px rgba(124,77,255,.35);transition:.18s;-webkit-tap-highlight-color:transparent;}
+#start-btn:hover{transform:scale(1.04);opacity:.93}
+.name-lion{width:110px;height:110px;animation:lion-idle 3s ease-in-out infinite;-webkit-animation:lion-idle 3s ease-in-out infinite;}
+
+/* ── MAIN ── */
+#main-content{display:none;}
+.grass-strip{height:28px;background:linear-gradient(180deg,var(--grass),#81C784);border-radius:0 0 40% 40%/0 0 20px 20px;margin-bottom:20px;position:relative;}
+.grass-strip::before{content:'🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱🌿🌱';position:absolute;top:-8px;left:0;right:0;font-size:14px;letter-spacing:2px;text-align:center;}
+
+/* ── SCORE BAR ── */
+#scorebar{position:sticky;top:10px;z-index:90;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:2px solid rgba(124,77,255,.15);border-radius:18px;padding:11px 18px;display:flex;align-items:center;gap:12px;margin-bottom:24px;box-shadow:var(--shadow);}
+#scorebar .label{font-weight:800;font-size:.9rem;color:var(--purple);white-space:nowrap}
+#scorebar .pts{font-family:'Fredoka One',cursive;font-size:1.5rem;color:var(--sun);white-space:nowrap}
+.bar-track{flex:1;height:12px;background:#EDE7F6;border-radius:99px;overflow:hidden;min-width:40px;}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--sky),var(--grass));border-radius:99px;transition:width .5s cubic-bezier(.34,1.56,.64,1);-webkit-transition:width .5s cubic-bezier(.34,1.56,.64,1);width:0%}
+#student-name-bar{font-family:'Fredoka One',cursive;font-size:.9rem;color:var(--teal);white-space:nowrap;display:none;}
+@media(min-width:480px){#student-name-bar{display:block}}
+
+/* ── WHY BOX ── */
+.why-box{background:linear-gradient(135deg,#FFF9C4,#FFF3CD);border:2px solid rgba(255,184,48,.4);border-radius:var(--radius);padding:20px 22px;margin-bottom:18px;position:relative;overflow:hidden;}
+.why-box::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:var(--sun);}
+.why-header{font-family:'Fredoka One',cursive;font-size:1.05rem;color:#7B5200;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.why-box p{font-size:.95rem;font-weight:600;color:#5D4037;line-height:1.7;}
+.why-box strong{color:#4E342E;}
+
+/* ── ILLUSTRATIONS ── */
+
+/* Cover scene — playground */
+.scene-cover{width:100%;max-width:340px;margin:0 auto 12px;display:block;}
+
+/* Section illustrations */
+.scene-block{
+  width:100%;max-width:480px;
+  margin:0 auto 20px;
+  display:block;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+/* Child run animation */
+@keyframes kid-run{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
+@-webkit-keyframes kid-run{0%,100%{-webkit-transform:translateX(0)}50%{-webkit-transform:translateX(8px)}}
+.kid-run{animation:kid-run 1.2s ease-in-out infinite;-webkit-animation:kid-run 1.2s ease-in-out infinite;}
+
+/* Swing animation */
+@keyframes swing{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(18deg)}}
+@-webkit-keyframes swing{0%,100%{-webkit-transform:rotate(-18deg)}50%{-webkit-transform:rotate(18deg)}}
+.swinging{animation:swing 1.8s ease-in-out infinite;-webkit-animation:swing 1.8s ease-in-out infinite;transform-origin:50% 0;-webkit-transform-origin:50% 0;}
+
+/* Flag wave */
+@keyframes flag-wave{0%,100%{transform:skewX(0deg)}50%{transform:skewX(-8deg)}}
+@-webkit-keyframes flag-wave{0%,100%{-webkit-transform:skewX(0deg)}50%{-webkit-transform:skewX(-8deg)}}
+.flag-wave{animation:flag-wave 2s ease-in-out infinite;-webkit-animation:flag-wave 2s ease-in-out infinite;transform-origin:left center;-webkit-transform-origin:left center;}
+
+/* Section icon badges */
+.sec-illus{
+  display:flex;align-items:center;justify-content:center;
+  margin:8px auto 20px;
+  width:100%;max-width:480px;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+}
+.kid-summary{background:linear-gradient(135deg,#E8F5E9,#E3F2FD);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px;border:1.5px solid rgba(102,187,106,.25);}
+.kid-summary-title{font-family:'Fredoka One',cursive;font-size:1rem;color:#2E7D32;margin-bottom:12px;}
+.kid-summary-items{display:flex;flex-direction:column;gap:8px;}
+.kid-item{display:flex;align-items:flex-start;gap:10px;font-size:.95rem;font-weight:700;color:var(--text);line-height:1.5;}
+.kid-icon{font-size:1.4rem;flex-shrink:0;margin-top:-1px;}
+
+/* ── RESUMO DETAILS (collapsible) ── */
+.resumo-details{margin-bottom:24px;}
+.resumo-details-summary{
+  font-family:'Fredoka One',cursive;font-size:1rem;color:var(--purple);
+  cursor:pointer;list-style:none;
+  background:rgba(124,77,255,.08);border:1.5px solid rgba(124,77,255,.2);
+  border-radius:14px;padding:12px 18px;
+  display:flex;align-items:center;gap:8px;
+  transition:.18s;-webkit-transition:.18s;
+  -webkit-tap-highlight-color:transparent;
+}
+.resumo-details-summary::-webkit-details-marker{display:none;}
+.resumo-details-summary::before{content:'▶';font-size:.7rem;transition:transform .2s;display:inline-block;}
+.resumo-details[open] .resumo-details-summary::before{transform:rotate(90deg);}
+.resumo-details-summary:hover{background:rgba(124,77,255,.14);}
+
+/* ── RESUMO CARD ICON ── */
+.resumo-card-icon{font-size:2rem;margin-bottom:6px;display:block;}
+.resumo-card h4{font-size:.9rem;font-weight:900;color:var(--purple);margin-bottom:7px;}
+
+/* ── SIDEBAR (desktop only, activated via JS) ── */
+#sidebar-col{display:none;}
+@media(min-width:1024px){
+  #sidebar-col{display:flex!important;}
+  #main-content .grass-strip{grid-column:1/3;}
+}
+.resumo-box{background:linear-gradient(135deg,#F3E5F5,#E8F5E9);border:2px solid rgba(124,77,255,.18);border-radius:var(--radius);padding:22px;margin-bottom:24px;}
+.resumo-title{font-family:'Fredoka One',cursive;font-size:1.15rem;color:var(--purple);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.resumo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.resumo-card{background:#fff;border-radius:16px;padding:14px 16px;border:1.5px solid rgba(124,77,255,.12);}
+.resumo-card h4{font-size:.92rem;font-weight:900;color:var(--purple);margin-bottom:7px;}
+.resumo-card p,.resumo-card li{font-size:.88rem;font-weight:600;color:var(--sub);line-height:1.65;}
+.resumo-card ul{padding-left:16px;}
+.resumo-card li{margin-bottom:3px;}
+.resumo-card strong{color:var(--text);}
+.highlight-strip{background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border-left:4px solid var(--grass);border-radius:0 12px 12px 0;padding:12px 16px;margin-top:14px;}
+.highlight-strip p{font-size:.9rem;font-weight:700;color:#2E7D32;line-height:1.6;}
+
+/* ── SECTION TITLES ── */
+.sec-title{display:flex;align-items:center;gap:10px;font-family:'Fredoka One',cursive;font-size:clamp(1rem,3vw,1.25rem);color:var(--purple);margin:32px 0 14px;}
+.sec-title .line{flex:1;height:2.5px;border-radius:2px;background:linear-gradient(90deg,rgba(124,77,255,.4),transparent);}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:var(--shadow);border:1.5px solid rgba(124,77,255,.08);transition:transform .18s;-webkit-transition:transform .18s;}
+.card:hover{transform:translateY(-2px);-webkit-transform:translateY(-2px);}
+.qnum{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;min-width:28px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:50%;font-family:'Fredoka One',cursive;font-size:.82rem;color:#fff;margin-right:8px;flex-shrink:0;vertical-align:middle;}
+/* q-text: block container, qnum floated so text wraps naturally */
+.q-text{font-size:1rem;font-weight:700;margin-bottom:14px;line-height:1.6;overflow:hidden;}
+.q-text .qnum{float:left;margin-top:2px;}
+
+/* ── OPTIONS ── */
+.opts{display:flex;flex-direction:column;gap:9px;}
+.opt-btn{
+  display:grid;
+  grid-template-columns:28px 1fr;
+  align-items:start;
+  gap:10px;
+  background:#F8F7FF;border:2px solid rgba(124,77,255,.12);border-radius:14px;
+  padding:12px 16px;font-family:'Nunito',sans-serif;font-size:.97rem;font-weight:700;
+  color:var(--text);cursor:pointer;text-align:left;
+  transition:.18s;-webkit-transition:.18s;min-height:50px;
+  -webkit-tap-highlight-color:transparent;width:100%;
+  word-break:break-word;
+}
+.opt-btn:hover:not(.disabled){background:#EDE7F6;border-color:var(--purple);}
+.opt-btn.correct{background:rgba(67,160,71,.12)!important;border-color:var(--correct)!important;color:var(--correct)!important;}
+.opt-btn.wrong{background:rgba(229,57,53,.1)!important;border-color:var(--wrong)!important;color:var(--wrong)!important;}
+.opt-btn.disabled{pointer-events:none;}
+.opt-btn-text{line-height:1.55;padding-top:2px;} /* text column flows naturally */
+.oletter{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:#EDE7F6;font-size:.82rem;font-weight:900;transition:.18s;flex-shrink:0;margin-top:1px;}
+.opt-btn.correct .oletter{background:var(--correct);color:#fff;}
+.opt-btn.wrong .oletter{background:var(--wrong);color:#fff;}
+
+/* ── ERROR EXPLANATION ── */
+.error-explain{display:none;margin-top:12px;background:linear-gradient(135deg,#FFF3E0,#FBE9E7);border:1.5px solid rgba(229,57,53,.25);border-radius:14px;padding:14px 16px;}
+.error-explain.show{display:block;animation:fade-in .3s ease;-webkit-animation:fade-in .3s ease;}
+.error-explain .ee-title{font-family:'Fredoka One',cursive;font-size:.92rem;color:#BF360C;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.error-explain p{font-size:.88rem;font-weight:600;color:#5D4037;line-height:1.65;}
+.error-explain .ee-step{display:flex;align-items:flex-start;gap:8px;margin-top:6px;}
+.error-explain .ee-num{min-width:22px;height:22px;border-radius:50%;background:#E64A19;color:#fff;font-family:'Fredoka One',cursive;font-size:.75rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.error-explain .ee-text{font-size:.87rem;font-weight:600;color:#5D4037;line-height:1.55;}
+
+/* ── TOOLTIP TRADUTOR ── */
+.tip{
+  border-bottom:2px dashed var(--purple);
+  cursor:pointer;color:var(--purple);font-weight:800;
+  -webkit-tap-highlight-color:transparent;
+  display:inline; /* stays in normal text flow */
+  white-space:normal; /* wraps naturally */
+  margin:0 1px; /* tiny gap so it doesn't collide with adjacent characters */
+}
+#tip-global{
+  display:none;position:fixed;
+  background:#3D1D8F;color:#fff;border-radius:14px;
+  padding:11px 15px;font-family:'Nunito',sans-serif;
+  font-size:.85rem;font-weight:700;line-height:1.55;
+  width:220px;max-width:calc(100vw - 28px);
+  z-index:9990;box-shadow:0 6px 24px rgba(0,0,0,.32);
+  pointer-events:none;
+}
+#tip-global.show{display:block;animation:fade-in .18s ease;-webkit-animation:fade-in .18s ease;}
+#tip-global strong{color:#FFD54F;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;}
+
+/* ── METACOGNIÇÃO ── */
+.meta-wrap{margin-top:14px;padding-top:12px;border-top:1.5px dashed rgba(124,77,255,.2);}
+.meta-label{font-size:.8rem;font-weight:800;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.meta-row{display:flex;gap:8px;flex-wrap:wrap;}
+.meta-btn{flex:1;min-width:80px;border:2px solid transparent;border-radius:12px;padding:9px 6px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;cursor:pointer;transition:.18s;-webkit-transition:.18s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;gap:5px;}
+.meta-btn.g{background:rgba(67,160,71,.1);border-color:rgba(67,160,71,.3);color:#2E7D32;}
+.meta-btn.y{background:rgba(255,184,48,.1);border-color:rgba(255,184,48,.4);color:#7B5200;}
+.meta-btn.r{background:rgba(229,57,53,.08);border-color:rgba(229,57,53,.3);color:#B71C1C;}
+.meta-btn:hover:not(.meta-done){opacity:.8;transform:scale(1.03);-webkit-transform:scale(1.03);}
+.meta-btn.meta-selected{font-size:.9rem;opacity:1;}
+.meta-btn.meta-done{pointer-events:none;}
+.meta-response{margin-top:8px;font-size:.85rem;font-weight:700;color:var(--teal);display:none;animation:fade-in .3s ease;-webkit-animation:fade-in .3s ease;}
+
+/* ── TF ── */
+.tf-row{display:flex;gap:10px;}
+.tf-btn{flex:1;padding:13px;border:2px solid rgba(124,77,255,.15);border-radius:14px;font-family:'Nunito',sans-serif;font-size:.97rem;font-weight:800;color:var(--text);cursor:pointer;background:#F8F7FF;transition:.18s;-webkit-transition:.18s;min-height:50px;-webkit-tap-highlight-color:transparent;}
+.tf-btn.v{border-color:rgba(67,160,71,.4);background:rgba(67,160,71,.07);color:#2E7D32;}
+.tf-btn.f{border-color:rgba(229,57,53,.35);background:rgba(229,57,53,.06);color:#C62828;}
+.tf-btn.correct{background:rgba(67,160,71,.15)!important;border-color:var(--correct)!important;color:var(--correct)!important;}
+.tf-btn.wrong{background:rgba(229,57,53,.12)!important;border-color:var(--wrong)!important;color:var(--wrong)!important;}
+.tf-btn.disabled{pointer-events:none;}
+.tf-label{font-size:.88rem;font-weight:700;color:var(--sub);margin-bottom:6px;line-height:1.5;}
+
+/* ── FILL ── */
+.fill-wrap{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:6px;}
+.fill-input{border:none;border-bottom:3px solid #C5CAE9;padding:6px 10px;background:rgba(124,77,255,.04);border-radius:8px 8px 0 0;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--text);width:140px;outline:none;transition:.2s;-webkit-transition:.2s;-webkit-appearance:none;}
+.fill-input:focus{border-color:var(--purple);background:rgba(124,77,255,.07);}
+.fill-input.correct{border-color:var(--correct);color:var(--correct);}
+.fill-input.wrong{border-color:var(--wrong);color:var(--wrong);}
+.chk-btn{background:linear-gradient(135deg,var(--purple),var(--sky));color:#fff;border:none;border-radius:12px;padding:9px 18px;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;transition:.18s;-webkit-transition:.18s;min-height:42px;-webkit-tap-highlight-color:transparent;}
+.chk-btn:hover{opacity:.85;transform:scale(1.04);-webkit-transform:scale(1.04);}
+.chk-btn.disabled{pointer-events:none;opacity:.4;}
+.fb{font-size:1.2rem;margin-left:4px;}
+
+/* ── MATCH ── */
+.match-wrap{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;}
+.match-col{display:flex;flex-direction:column;gap:9px;flex:1;min-width:120px;}
+.match-col h4{font-size:.8rem;font-weight:800;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.match-item{background:#F8F7FF;border:2px solid rgba(124,77,255,.12);border-radius:12px;padding:10px 14px;font-weight:700;font-size:.93rem;cursor:pointer;transition:.18s;-webkit-transition:.18s;min-height:46px;-webkit-tap-highlight-color:transparent;}
+.match-item:hover:not(.disabled):not(.selected){border-color:var(--purple);background:#EDE7F6;}
+.match-item.selected{border-color:var(--sun);background:rgba(255,184,48,.15);color:#7B5200;}
+.match-item.matched{border-color:var(--correct);background:rgba(67,160,71,.1);color:var(--correct);}
+.match-item.wrong-match{border-color:var(--wrong);background:rgba(229,57,53,.08);color:var(--wrong);animation:shake .3s ease;-webkit-animation:shake .3s ease;}
+.match-item.disabled{pointer-events:none;}
+@-webkit-keyframes shake{0%,100%{-webkit-transform:translateX(0)}25%{-webkit-transform:translateX(-5px)}75%{-webkit-transform:translateX(5px)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* ── OPEN ANSWER ── */
+/* ── CONFETTI ── */
+.cp{position:fixed;width:10px;height:10px;top:-12px;border-radius:3px;pointer-events:none;z-index:9998;animation:cf var(--d) ease-in forwards;-webkit-animation:cf var(--d) ease-in forwards;}
+@-webkit-keyframes cf{0%{-webkit-transform:translate(0,0) rotate(0deg);opacity:1}100%{-webkit-transform:translate(var(--tx),100vh) rotate(var(--rot));opacity:0}}
+@keyframes cf{0%{transform:translate(0,0) rotate(0deg);opacity:1}100%{transform:translate(var(--tx),100vh) rotate(var(--rot));opacity:0}}
+
+/* ── RESULT ── */
+#result-screen{display:none;padding:20px 16px 60px;animation:fade-in .5s ease;-webkit-animation:fade-in .5s ease;max-width:var(--max);margin:0 auto;}
+#share-card{background:linear-gradient(140deg,#7C4DFF 0%,#B388FF 40%,#4FC3F7 100%);border-radius:28px;padding:28px 24px 24px;text-align:center;box-shadow:0 12px 40px rgba(124,77,255,.35);position:relative;overflow:hidden;max-width:440px;margin:0 auto;}
+#share-card::before{content:'';position:absolute;inset:0;background-image:radial-gradient(2px 2px at 20% 20%,rgba(255,255,255,.6) 0,transparent 100%),radial-gradient(2px 2px at 60% 15%,rgba(255,255,255,.4) 0,transparent 100%),radial-gradient(1.5px 1.5px at 80% 60%,rgba(255,255,255,.5) 0,transparent 100%),radial-gradient(1px 1px at 35% 70%,rgba(255,255,255,.3) 0,transparent 100%);pointer-events:none;}
+.card-lion-wrap{width:80px;height:80px;margin:0 auto 8px;animation:lion-cel .45s ease-in-out infinite alternate;-webkit-animation:lion-cel .45s ease-in-out infinite alternate;}
+.res-subject-tag{display:inline-block;background:rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-family:'Fredoka One',cursive;font-size:.78rem;color:rgba(255,255,255,.9);margin-bottom:8px;letter-spacing:.04em;}
+#share-card h2{font-family:'Fredoka One',cursive;font-size:clamp(1.3rem,4vw,1.6rem);color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.2);margin-bottom:2px;}
+.result-grade{font-family:'Fredoka One',cursive;font-size:clamp(3rem,10vw,4.2rem);color:#FFE082;text-shadow:0 4px 16px rgba(0,0,0,.25);line-height:1;margin:8px 0 4px;}
+.result-stars{font-size:clamp(1.4rem,5vw,1.9rem);margin-bottom:6px;letter-spacing:3px;}
+.result-subtitle{font-family:'Fredoka One',cursive;font-size:clamp(.9rem,3vw,1.05rem);color:rgba(255,255,255,.92);margin-bottom:10px;}
+.res-meta-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.res-meta-row span{background:rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:800;color:#fff;}
+.result-tag{display:inline-block;background:rgba(255,255,255,.22);border-radius:30px;padding:5px 16px;font-family:'Fredoka One',cursive;font-size:.85rem;color:#fff;}
+
+/* share zone */
+.share-zone{text-align:center;margin:14px 0 20px;}
+.share-hint{font-size:.88rem;font-weight:700;color:var(--sub);margin-bottom:8px;}
+.share-pulse{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:#fff;border-radius:50px;padding:10px 24px;
+  font-family:'Fredoka One',cursive;font-size:1rem;
+  box-shadow:0 4px 16px rgba(255,107,157,.4);
+  animation:pulse-btn 1.5s ease-in-out infinite;
+  -webkit-animation:pulse-btn 1.5s ease-in-out infinite;
+}
+
+/* breakdown */
+.breakdown-box{background:#fff;border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow);border:1.5px solid rgba(124,77,255,.08);}
+.breakdown-title{font-family:'Fredoka One',cursive;font-size:1.05rem;color:var(--purple);margin-bottom:14px;}
+.bd-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bd-label{font-size:.88rem;font-weight:700;color:var(--text);min-width:130px;flex-shrink:0;}
+.bd-bar-track{flex:1;height:14px;background:#EDE7F6;border-radius:99px;overflow:hidden;}
+.bd-bar-fill{height:100%;border-radius:99px;transition:width .8s cubic-bezier(.34,1.56,.64,1);-webkit-transition:width .8s cubic-bezier(.34,1.56,.64,1);}
+.bd-count{font-family:'Fredoka One',cursive;font-size:.9rem;min-width:36px;text-align:right;flex-shrink:0;}
+
+/* personal message */
+.personal-msg-box{background:linear-gradient(135deg,#F3E5F5,#E8F5E9);border:1.5px solid rgba(124,77,255,.15);border-radius:var(--radius);padding:16px 18px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px;}
+.personal-msg-icon{font-size:2rem;flex-shrink:0;margin-top:2px;}
+#personal-msg-text{font-size:.95rem;font-weight:700;color:var(--text);line-height:1.6;}
+#personal-msg-text strong{color:var(--purple);}
+
+/* review box */
+#review-box{background:#fff;border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow);border:1.5px solid rgba(229,57,53,.12);}
+.review-item{background:#FFF3E0;border-left:3px solid var(--sun);border-radius:0 12px 12px 0;padding:10px 14px;margin-bottom:8px;font-size:.88rem;font-weight:600;color:#5D4037;line-height:1.55;}
+.review-item strong{color:#E65100;display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+
+/* actions */
+.result-actions{text-align:center;margin-top:20px;}
+.restart-btn{display:inline-block;background:linear-gradient(135deg,var(--sun),#FF9800);color:#fff;border:none;border-radius:16px;padding:14px 40px;font-family:'Fredoka One',cursive;font-size:1.05rem;cursor:pointer;box-shadow:0 4px 14px rgba(255,152,0,.35);transition:.18s;-webkit-transition:.18s;-webkit-tap-highlight-color:transparent;}
+.restart-btn:hover{transform:scale(1.04);-webkit-transform:scale(1.04);opacity:.92;}
+
+/* ── SOUND BANNER ── */
+#sound-banner{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);-webkit-transform:translateX(-50%);z-index:9997;background:linear-gradient(135deg,var(--purple),var(--sky));color:#fff;border:none;border-radius:50px;padding:12px 26px;font-family:'Fredoka One',cursive;font-size:.95rem;cursor:pointer;box-shadow:0 4px 18px rgba(124,77,255,.5);display:flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent;animation:pulse-btn 2s ease-in-out infinite;-webkit-animation:pulse-btn 2s ease-in-out infinite;}
+@-webkit-keyframes pulse-btn{0%,100%{box-shadow:0 4px 18px rgba(124,77,255,.5)}50%{box-shadow:0 4px 28px rgba(124,77,255,.9)}}
+@keyframes pulse-btn{0%,100%{box-shadow:0 4px 18px rgba(124,77,255,.5)}50%{box-shadow:0 4px 28px rgba(124,77,255,.9)}}
+#sound-banner.hidden{display:none!important;}
+
+/* ── RESPONSIVE ── */
+
+/* Mobile: < 480px */
+@media(max-width:480px){
+  .resumo-grid{grid-template-columns:1fr;}
+  .match-wrap{flex-direction:column;}
+  .tf-row{gap:8px;}
+  .tf-btn{padding:13px 6px;font-size:.92rem;}
+  .opt-btn{min-height:54px;font-size:1rem;} /* bigger touch target */
+  .meta-btn{min-height:48px;font-size:.9rem;}
+  #scorebar{padding:10px 12px;gap:8px;}
+  #scorebar .pts{font-size:1.3rem;}
+}
+
+/* iPad portrait + small desktop: 768px – 1023px */
+@media(min-width:768px) and (max-width:1023px){
+  .resumo-grid{grid-template-columns:repeat(2,1fr);}
+  .container{padding:0 28px;}
+  .card{padding:22px 26px;}
+  .opt-btn{font-size:1.02rem;}
+  #main-content,#result-screen{max-width:720px;margin:0 auto;}
+}
+
+/* Desktop: ≥ 1024px — two-column layout */
+@media(min-width:1024px){
+  body{background:#ECEAF8;}
+  #main-content{
+    display:grid!important;
+    grid-template-columns:1fr 300px;
+    grid-template-rows:auto 1fr;
+    max-width:1100px;margin:24px auto;
+    background:transparent;
+    gap:0;
+    align-items:start;
+  }
+  .sky-band{
+    grid-column:1/3;
+    border-radius:24px 24px 0 0;
+    background:linear-gradient(180deg,#B3E5FC 0%,#E1F5FE 60%,#fff 100%);
+  }
+  /* left: scrollable content */
+  #content-col{
+    background:var(--warm);
+    border-radius:0 0 0 24px;
+    min-height:100vh;
+    padding:0 0 60px;
+    overflow:visible;
+  }
+  /* right: sticky sidebar with lion + score */
+  #sidebar-col{
+    background:#fff;
+    border-radius:0 0 24px 0;
+    border-left:1.5px solid rgba(124,77,255,.1);
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:24px 16px;
+    gap:16px;
+  }
+  #scorebar{
+    position:static;
+    flex-direction:column;
+    align-items:stretch;
+    border-radius:16px;
+    width:100%;
+    gap:8px;
+  }
+  #scorebar .pts{font-size:2rem;text-align:center;}
+  #student-name-bar{display:block;text-align:center;font-size:1rem;}
+  .grass-strip{display:none;} /* handled by sky-band in desktop */
+  .resumo-grid{grid-template-columns:repeat(2,1fr);}
+}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;-webkit-animation:none!important;transition:none!important;-webkit-transition:none!important;}}
+</style>
+</head>
+<body>
+
+<button id="sound-banner" onclick="unlockAudio()">🔊 Toque para ativar o som!</button>
+
+<!-- NAME SCREEN -->
+<div id="name-screen">
+  <!-- Cover illustration: playground scene -->
+  <svg class="scene-cover" viewBox="0 0 340 160" xmlns="http://www.w3.org/2000/svg">
+    <!-- Sky -->
+    <rect width="340" height="160" fill="#B3E5FC"/>
+    <!-- Sun -->
+    <circle cx="290" cy="30" r="22" fill="#FFE082"/>
+    <circle cx="290" cy="30" r="18" fill="#FFB830"/>
+    <!-- Clouds -->
+    <ellipse cx="60" cy="28" rx="28" ry="10" fill="#fff" opacity=".9"/>
+    <ellipse cx="48" cy="25" rx="14" ry="14" fill="#fff" opacity=".9"/>
+    <ellipse cx="70" cy="22" rx="12" ry="12" fill="#fff" opacity=".9"/>
+    <ellipse cx="190" cy="20" rx="22" ry="8" fill="#fff" opacity=".85"/>
+    <ellipse cx="180" cy="17" rx="11" ry="11" fill="#fff" opacity=".85"/>
+    <ellipse cx="200" cy="15" rx="10" ry="10" fill="#fff" opacity=".85"/>
+    <!-- Ground -->
+    <rect y="118" width="340" height="42" fill="#66BB6A"/>
+    <rect y="115" width="340" height="6" rx="3" fill="#81C784"/>
+    <!-- Path -->
+    <ellipse cx="170" cy="128" rx="80" ry="8" fill="#A5D6A7" opacity=".5"/>
+    <!-- SLIDE -->
+    <rect x="40" y="70" width="8" height="50" rx="4" fill="#7C4DFF"/>
+    <rect x="90" y="70" width="8" height="50" rx="4" fill="#7C4DFF"/>
+    <rect x="40" y="70" width="58" height="6" rx="3" fill="#B388FF"/>
+    <!-- slide ramp -->
+    <path d="M88 76 L120 115" stroke="#FF6B9D" stroke-width="7" stroke-linecap="round"/>
+    <rect x="116" y="112" width="18" height="6" rx="3" fill="#FF6B9D"/>
+    <!-- Kid on slide -->
+    <g transform="translate(104,98)">
+      <circle cx="0" cy="-8" r="7" fill="#FFB74D"/><!-- head -->
+      <rect x="-5" y="-1" width="10" height="12" rx="5" fill="#FF8F00"/><!-- body -->
+      <line x1="-5" y1="5" x2="-10" y2="14" stroke="#FF8F00" stroke-width="3" stroke-linecap="round"/>
+      <line x1="5" y1="5" x2="10" y2="14" stroke="#FF8F00" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <!-- SWING SET -->
+    <!-- poles -->
+    <line x1="160" y1="55" x2="145" y2="118" stroke="#795548" stroke-width="5" stroke-linecap="round"/>
+    <line x1="220" y1="55" x2="235" y2="118" stroke="#795548" stroke-width="5" stroke-linecap="round"/>
+    <line x1="160" y1="55" x2="220" y2="55" stroke="#795548" stroke-width="5" stroke-linecap="round"/>
+    <!-- swing ropes + seat -->
+    <g class="swinging" style="transform-origin:190px 55px">
+      <line x1="175" y1="55" x2="175" y2="95" stroke="#795548" stroke-width="2.5"/>
+      <line x1="205" y1="55" x2="205" y2="95" stroke="#795548" stroke-width="2.5"/>
+      <rect x="170" y="93" width="35" height="6" rx="3" fill="#7C4DFF"/>
+      <!-- kid on swing -->
+      <circle cx="190" cy="83" r="8" fill="#FFB74D"/>
+      <rect x="184" y="90" width="12" height="14" rx="6" fill="#FF6B9D"/>
+      <line x1="184" y1="96" x2="174" y2="104" stroke="#FF6B9D" stroke-width="3" stroke-linecap="round"/>
+      <line x1="196" y1="96" x2="206" y2="104" stroke="#FF6B9D" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <!-- Running kid -->
+    <g class="kid-run" transform="translate(258,92)">
+      <circle cx="0" cy="-10" r="8" fill="#FFB74D"/>
+      <rect x="-6" y="-2" width="12" height="16" rx="6" fill="#66BB6A"/>
+      <line x1="-6" y1="4" x2="-14" y2="14" stroke="#66BB6A" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="6" y1="4" x2="10" y2="12" stroke="#66BB6A" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="-4" y1="14" x2="-10" y2="22" stroke="#66BB6A" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="4" y1="12" x2="12" y2="20" stroke="#66BB6A" stroke-width="3.5" stroke-linecap="round"/>
+    </g>
+    <!-- Tree -->
+    <rect x="300" y="90" width="8" height="28" rx="4" fill="#795548"/>
+    <circle cx="304" cy="82" r="20" fill="#388E3C"/>
+    <circle cx="292" cy="90" r="14" fill="#43A047"/>
+    <circle cx="316" cy="88" r="14" fill="#43A047"/>
+    <!-- Flowers -->
+    <circle cx="30" cy="120" r="4" fill="#FF6B9D"/><circle cx="30" cy="120" r="2" fill="#FFE082"/>
+    <circle cx="130" cy="122" r="3" fill="#FF8F00"/><circle cx="130" cy="122" r="1.5" fill="#fff"/>
+    <circle cx="248" cy="121" r="4" fill="#7C4DFF"/><circle cx="248" cy="121" r="2" fill="#FFE082"/>
+  </svg>
+
+  <div class="name-lion">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="52" r="36" fill="#E65100"/><circle cx="50" cy="52" r="30" fill="#FF8F00"/>
+      <ellipse cx="22" cy="44" rx="10" ry="14" fill="#E65100" transform="rotate(-20 22 44)"/><ellipse cx="78" cy="44" rx="10" ry="14" fill="#E65100" transform="rotate(20 78 44)"/>
+      <ellipse cx="30" cy="28" rx="8" ry="12" fill="#BF360C" transform="rotate(-35 30 28)"/><ellipse cx="70" cy="28" rx="8" ry="12" fill="#BF360C" transform="rotate(35 70 28)"/>
+      <ellipse cx="50" cy="20" rx="9" ry="11" fill="#E65100"/>
+      <ellipse cx="50" cy="55" rx="24" ry="22" fill="#FFB74D"/>
+      <ellipse cx="41" cy="48" rx="6" ry="6.5" fill="#fff"/><ellipse cx="59" cy="48" rx="6" ry="6.5" fill="#fff"/>
+      <circle cx="42" cy="49" r="3.5" fill="#4E342E"/><circle cx="60" cy="49" r="3.5" fill="#4E342E"/>
+      <circle cx="43.5" cy="47.5" r="1.2" fill="#fff"/><circle cx="61.5" cy="47.5" r="1.2" fill="#fff"/>
+      <ellipse cx="50" cy="58" rx="7" ry="5" fill="#E64A19"/><ellipse cx="50" cy="57" rx="5" ry="3" fill="#FF7043"/>
+      <path d="M44 62 Q50 68 56 62" stroke="#5D4037" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="27" cy="32" r="7" fill="#FF8F00"/><circle cx="27" cy="32" r="4" fill="#FFB74D"/>
+      <circle cx="73" cy="32" r="7" fill="#FF8F00"/><circle cx="73" cy="32" r="4" fill="#FFB74D"/>
+      <line x1="30" y1="60" x2="44" y2="59" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+      <line x1="30" y1="63" x2="44" y2="62" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+      <line x1="56" y1="59" x2="70" y2="60" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+      <line x1="56" y1="62" x2="70" y2="63" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+    </svg>
+  </div>
+  <h2>Olá, aventureiro! 👋</h2>
+  <p>Qual é o seu nome?</p>
+  <input type="text" id="name-input" placeholder="Escreva seu nome aqui" maxlength="30" autocomplete="off" autocorrect="off" spellcheck="false"/>
+  <button id="start-btn" onclick="startGame()">Vamos lá! 🚀</button>
+</div>
+
+<!-- LION SVG template (reused inline) -->
+<template id="lion-tpl">
+  <svg class="lion-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="52" r="36" fill="#E65100"/><circle cx="50" cy="52" r="30" fill="#FF8F00"/>
+    <ellipse cx="22" cy="44" rx="10" ry="14" fill="#E65100" transform="rotate(-20 22 44)"/><ellipse cx="78" cy="44" rx="10" ry="14" fill="#E65100" transform="rotate(20 78 44)"/>
+    <ellipse cx="30" cy="28" rx="8" ry="12" fill="#BF360C" transform="rotate(-35 30 28)"/><ellipse cx="70" cy="28" rx="8" ry="12" fill="#BF360C" transform="rotate(35 70 28)"/>
+    <ellipse cx="50" cy="20" rx="9" ry="11" fill="#E65100"/>
+    <ellipse cx="50" cy="55" rx="24" ry="22" fill="#FFB74D"/>
+    <ellipse cx="41" cy="48" rx="6" ry="6.5" fill="#fff" id="el"/><ellipse cx="59" cy="48" rx="6" ry="6.5" fill="#fff" id="er"/>
+    <circle cx="42" cy="49" r="3.5" fill="#4E342E" id="pl"/><circle cx="60" cy="49" r="3.5" fill="#4E342E" id="pr"/>
+    <circle cx="43.5" cy="47.5" r="1.2" fill="#fff"/><circle cx="61.5" cy="47.5" r="1.2" fill="#fff"/>
+    <ellipse cx="50" cy="58" rx="7" ry="5" fill="#E64A19"/><ellipse cx="50" cy="57" rx="5" ry="3" fill="#FF7043"/>
+    <path d="M44 62 Q50 68 56 62" stroke="#5D4037" stroke-width="2" fill="none" stroke-linecap="round" id="lm"/>
+    <circle cx="27" cy="32" r="7" fill="#FF8F00"/><circle cx="27" cy="32" r="4" fill="#FFB74D"/>
+    <circle cx="73" cy="32" r="7" fill="#FF8F00"/><circle cx="73" cy="32" r="4" fill="#FFB74D"/>
+    <line x1="30" y1="60" x2="44" y2="59" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+    <line x1="30" y1="63" x2="44" y2="62" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+    <line x1="56" y1="59" x2="70" y2="60" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+    <line x1="56" y1="62" x2="70" y2="63" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+  </svg>
+</template>
+
+<!-- MAIN -->
+<div id="main-content">
+  <div class="sky-band">
+    <div class="cloud cloud-a"></div><div class="cloud cloud-b"></div><div class="cloud cloud-c"></div>
+    <div class="sun"></div>
+    <div class="container">
+      <div class="mascot-wrap">
+        <div class="lion" id="lion"></div>
+        <div class="speech" id="speech">Vamos aprender juntos! 🌍</div>
+      </div>
+    </div>
+  </div>
+  <div class="grass-strip"></div>
+
+  <!-- DESKTOP: content col + sidebar col -->
+  <div id="content-col">
+  <div class="container">
+    <div id="scorebar">
+      <span class="label">⭐</span>
+      <span class="pts" id="pts">0/0</span>
+      <div class="bar-track"><div class="bar-fill" id="bfill"></div></div>
+      <span id="student-name-bar"></span>
+    </div>
+
+    <!-- TOPIC REVEAL -->
+    <div style="text-align:center;margin-bottom:20px;animation:fade-in .6s ease;-webkit-animation:fade-in .6s ease;">
+      <div style="display:inline-block;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:50px;padding:8px 22px;margin-bottom:12px;">
+        <span style="font-family:'Fredoka One',cursive;font-size:.85rem;color:#fff;letter-spacing:.08em;text-transform:uppercase;">📖 Hoje você vai aprender sobre</span>
+      </div>
+      <div style="font-family:'Fredoka One',cursive;font-size:clamp(1.6rem,5vw,2.2rem);color:var(--purple);line-height:1.2;margin-bottom:6px;">
+        Muitas Pessoas Juntas 🏘️
+      </div>
+      <div style="font-size:.95rem;font-weight:700;color:var(--sub);">História · Capítulo 4 · <span id="topic-name-display"></span></div>
+    </div>
+
+    <!-- WHY LEARN — versão curta e direta -->
+    <div class="why-box">
+      <div class="why-header">🤔 Por que aprender isso?</div>
+      <p>Na pracinha você espera sua vez. No clube você divide a piscina. Na escola você respeita a fila. <strong>Isso tudo é viver em comunidade</strong> — e você já faz isso toda semana sem perceber! 🌳<br><br>
+      Hoje você vai entender as regras que fazem essa convivência funcionar e como cuidar dos espaços que são de todo mundo. 🦁</p>
+    </div>
+
+    <!-- Scene: neighborhood / community -->
+    <svg class="scene-block" viewBox="0 0 480 130" xmlns="http://www.w3.org/2000/svg">
+      <rect width="480" height="130" fill="#E3F2FD"/>
+      <!-- Sky gradient -->
+      <defs><linearGradient id="sky-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#B3E5FC"/><stop offset="100%" stop-color="#E1F5FE"/></linearGradient></defs>
+      <rect width="480" height="130" fill="url(#sky-g)"/>
+      <!-- Ground -->
+      <rect y="95" width="480" height="35" fill="#66BB6A"/>
+      <rect y="92" width="480" height="5" rx="2" fill="#81C784"/>
+      <!-- Road -->
+      <rect x="180" y="92" width="120" height="38" fill="#90A4AE"/>
+      <rect x="234" y="100" width="12" height="8" rx="1" fill="#FFE082"/>
+      <rect x="234" y="114" width="12" height="8" rx="1" fill="#FFE082"/>
+      <!-- House 1 -->
+      <rect x="20" y="58" width="70" height="40" rx="4" fill="#FFCCBC"/>
+      <polygon points="20,58 55,30 90,58" fill="#E53935"/>
+      <rect x="38" y="70" width="18" height="28" rx="2" fill="#795548"/>
+      <rect x="60" y="65" width="18" height="14" rx="2" fill="#B3E5FC"/>
+      <line x1="69" y1="65" x2="69" y2="79" stroke="#90A4AE" stroke-width="1.5"/>
+      <line x1="60" y1="72" x2="78" y2="72" stroke="#90A4AE" stroke-width="1.5"/>
+      <!-- Chimney -->
+      <rect x="62" y="24" width="8" height="16" rx="2" fill="#BDBDBD"/>
+      <!-- House 2 -->
+      <rect x="130" y="62" width="60" height="36" rx="4" fill="#C8E6C9"/>
+      <polygon points="130,62 160,38 190,62" fill="#388E3C"/>
+      <rect x="148" y="74" width="14" height="24" rx="2" fill="#795548"/>
+      <rect x="162" y="68" width="16" height="12" rx="2" fill="#B3E5FC"/>
+      <line x1="170" y1="68" x2="170" y2="80" stroke="#90A4AE" stroke-width="1.5"/>
+      <line x1="162" y1="74" x2="178" y2="74" stroke="#90A4AE" stroke-width="1.5"/>
+      <!-- School -->
+      <rect x="310" y="48" width="100" height="50" rx="4" fill="#FFF9C4"/>
+      <polygon points="310,48 360,20 410,48" fill="#F57F17"/>
+      <rect x="348" y="62" width="24" height="36" rx="2" fill="#795548"/>
+      <rect x="315" y="56" width="22" height="16" rx="2" fill="#B3E5FC"/>
+      <rect x="373" y="56" width="22" height="16" rx="2" fill="#B3E5FC"/>
+      <!-- Flag on school -->
+      <line x1="360" y1="5" x2="360" y2="22" stroke="#795548" stroke-width="2.5"/>
+      <rect class="flag-wave" x="360" y="5" width="22" height="14" rx="2" fill="#E53935"/>
+      <!-- Sign: ESCOLA -->
+      <rect x="328" y="40" width="64" height="14" rx="3" fill="#F57F17"/>
+      <text x="360" y="51" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="bold" fill="#fff">ESCOLA</text>
+      <!-- Park area -->
+      <circle cx="255" cy="78" r="16" fill="#43A047"/>
+      <circle cx="242" cy="84" r="12" fill="#388E3C"/>
+      <circle cx="268" cy="82" r="12" fill="#388E3C"/>
+      <rect x="252" y="88" width="6" height="12" rx="3" fill="#795548"/>
+      <!-- Bench -->
+      <rect x="228" y="100" width="44" height="5" rx="2" fill="#795548"/>
+      <rect x="231" y="100" width="4" height="8" rx="1" fill="#795548"/>
+      <rect x="268" y="100" width="4" height="8" rx="1" fill="#795548"/>
+      <!-- Walking people -->
+      <circle cx="97" cy="86" r="5" fill="#FFB74D"/>
+      <rect x="93" y="91" width="8" height="10" rx="4" fill="#7C4DFF"/>
+      <circle cx="112" cy="84" r="5" fill="#FFCCBC"/>
+      <rect x="108" y="89" width="8" height="10" rx="4" fill="#FF6B9D"/>
+    </svg>
+
+    <!-- RESUMO RELÂMPAGO (versão criança) -->
+    <div class="kid-summary">
+      <div class="kid-summary-title">⚡ O essencial em 3 frases</div>
+      <div class="kid-summary-items">
+        <div class="kid-item"><span class="kid-icon">👨‍👩‍👧</span><span><strong>Comunidade</strong> = pessoas que convivem no mesmo lugar</span></div>
+        <div class="kid-item"><span class="kid-icon">🏛️</span><span><strong>Espaço público</strong> = praça, escola, parque — é de todo mundo!</span></div>
+        <div class="kid-item"><span class="kid-icon">🤝</span><span><strong>Cidadão</strong> = quem respeita, coopera e cuida do espaço comum</span></div>
+      </div>
+    </div>
+
+    <!-- RESUMO COMPLETO (para quem quer saber mais) -->
+    <details class="resumo-details">
+      <summary class="resumo-details-summary">📚 Ver resumo completo</summary>
+      <div class="resumo-box" style="margin-top:12px;margin-bottom:0">
+        <div class="resumo-grid">
+          <div class="resumo-card">
+            <div class="resumo-card-icon">👨‍👩‍👧</div>
+            <h4>O que é comunidade?</h4>
+            <p>Um grupo de pessoas que <strong>convivem em um mesmo lugar</strong>, trabalhando, estudando e se ajudando. Família, escola, bairro — todos são comunidades.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-icon">🏙️</div>
+            <h4>Espaços públicos</h4>
+            <ul>
+              <li>Praças e parques</li>
+              <li>Escolas e bibliotecas</li>
+              <li>Hospitais e postos de saúde</li>
+              <li>Ruas e calçadas</li>
+            </ul>
+            <p style="margin-top:6px">São de <strong>todos</strong> — devem ser cuidados por todos.</p>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-icon">🤝</div>
+            <h4>Viver bem em grupo</h4>
+            <ul>
+              <li>Respeitar as pessoas</li>
+              <li>Seguir as regras</li>
+              <li>Cooperar e ajudar</li>
+              <li>Resolver conflitos com diálogo</li>
+              <li>Cuidar dos espaços comuns</li>
+            </ul>
+          </div>
+          <div class="resumo-card">
+            <div class="resumo-card-icon">🌈</div>
+            <h4>Diversidade e cidadania</h4>
+            <p>As pessoas têm costumes, culturas e religiões <strong>diferentes</strong>. Isso é riqueza! Respeitar as diferenças é o que chamamos de <strong>cidadania</strong>.</p>
+          </div>
+        </div>
+        <div class="highlight-strip">
+          <p>💡 <strong>Direitos</strong>: o que podemos exigir (escola, saúde). <strong>Deveres</strong>: o que precisamos fazer (respeitar, cuidar). Os dois andam juntos!</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- P1 -->
+    <div class="sec-title"><span>🏘️ Parte 1 — Comunidade e Convivência</span><span class="line"></span></div>
+    <!-- Illustration: people together -->
+    <svg class="sec-illus" viewBox="0 0 480 80" xmlns="http://www.w3.org/2000/svg">
+      <rect width="480" height="80" fill="#F3E5F5"/>
+      <!-- hearts floating -->
+      <text x="60" y="28" font-size="18" opacity=".4">❤️</text>
+      <text x="200" y="20" font-size="14" opacity=".35">💛</text>
+      <text x="360" y="25" font-size="16" opacity=".4">💚</text>
+      <!-- 5 people silhouettes holding hands -->
+      <g transform="translate(100,15)">
+        <!-- person 1 -->
+        <circle cx="0" cy="0" r="9" fill="#7C4DFF"/>
+        <rect x="-7" y="9" width="14" height="20" rx="7" fill="#7C4DFF"/>
+        <!-- person 2 -->
+        <circle cx="38" cy="0" r="9" fill="#FF6B9D"/>
+        <rect x="31" y="9" width="14" height="20" rx="7" fill="#FF6B9D"/>
+        <!-- person 3 -->
+        <circle cx="76" cy="-4" r="9" fill="#FFB830"/>
+        <rect x="69" y="5" width="14" height="20" rx="7" fill="#FFB830"/>
+        <!-- person 4 -->
+        <circle cx="114" cy="0" r="9" fill="#43A047"/>
+        <rect x="107" y="9" width="14" height="20" rx="7" fill="#43A047"/>
+        <!-- person 5 -->
+        <circle cx="152" cy="0" r="9" fill="#4FC3F7"/>
+        <rect x="145" y="9" width="14" height="20" rx="7" fill="#4FC3F7"/>
+        <!-- hands -->
+        <line x1="14" y1="18" x2="31" y2="18" stroke="#CE93D8" stroke-width="3" stroke-linecap="round"/>
+        <line x1="52" y1="18" x2="69" y2="14" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+        <line x1="90" y1="14" x2="107" y2="18" stroke="#A5D6A7" stroke-width="3" stroke-linecap="round"/>
+        <line x1="128" y1="18" x2="145" y2="18" stroke="#81D4FA" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <!-- label -->
+      <text x="240" y="68" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="bold" fill="#7C4DFF" opacity=".7">Juntos somos mais fortes! 🌍</text>
+    </svg>
+    <div id="p1"></div>
+
+    <!-- P2 -->
+    <div class="sec-title"><span>🏛️ Parte 2 — Espaços Públicos</span><span class="line"></span></div>
+    <!-- Illustration: public spaces strip -->
+    <svg class="sec-illus" viewBox="0 0 480 80" xmlns="http://www.w3.org/2000/svg">
+      <rect width="480" height="80" fill="#E8F5E9"/>
+      <!-- Park -->
+      <circle cx="60" cy="35" r="22" fill="#43A047"/>
+      <circle cx="46" cy="42" r="15" fill="#388E3C"/>
+      <circle cx="74" cy="40" r="15" fill="#388E3C"/>
+      <rect x="57" y="48" width="6" height="16" rx="3" fill="#795548"/>
+      <text x="60" y="74" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="bold" fill="#2E7D32">PARQUE</text>
+      <!-- Hospital -->
+      <rect x="140" y="20" width="60" height="44" rx="4" fill="#fff" stroke="#E53935" stroke-width="2"/>
+      <rect x="162" y="28" width="16" height="28" rx="2" fill="#E53935"/>
+      <rect x="154" y="36" width="32" height="12" rx="2" fill="#E53935"/>
+      <text x="170" y="72" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="bold" fill="#E53935">HOSPITAL</text>
+      <!-- Library -->
+      <rect x="250" y="22" width="70" height="42" rx="4" fill="#FFF9C4" stroke="#F57F17" stroke-width="2"/>
+      <rect x="258" y="30" width="10" height="28" rx="2" fill="#F57F17"/>
+      <rect x="272" y="30" width="10" height="28" rx="2" fill="#FF8F00"/>
+      <rect x="286" y="30" width="10" height="28" rx="2" fill="#F57F17"/>
+      <rect x="300" y="30" width="10" height="28" rx="2" fill="#FFB830"/>
+      <text x="285" y="72" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="bold" fill="#E65100">BIBLIOTECA</text>
+      <!-- School -->
+      <rect x="370" y="18" width="70" height="46" rx="4" fill="#E3F2FD" stroke="#1976D2" stroke-width="2"/>
+      <polygon points="370,18 405,4 440,18" fill="#1976D2"/>
+      <rect x="391" y="34" width="28" height="30" rx="2" fill="#795548"/>
+      <rect x="374" y="26" width="14" height="10" rx="1" fill="#B3E5FC"/>
+      <rect x="412" y="26" width="14" height="10" rx="1" fill="#B3E5FC"/>
+      <text x="405" y="73" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="bold" fill="#1976D2">ESCOLA</text>
+    </svg>
+    <div id="p2"></div>
+
+    <!-- P3 -->
+    <div class="sec-title"><span>✏️ Parte 3 — Complete as Frases</span><span class="line"></span></div>
+    <div id="p3"></div>
+
+    <!-- P4 -->
+    <div class="sec-title"><span>☑️ Parte 4 — Verdadeiro ou Falso</span><span class="line"></span></div>
+    <div id="p4"></div>
+
+    <!-- P5 -->
+    <div class="sec-title"><span>🔗 Parte 5 — Ligue os Grupos</span><span class="line"></span></div>
+    <div id="p5"></div>
+
+    <!-- SIM -->
+    <div class="sec-title"><span>🎯 Simulado Final</span><span class="line"></span></div>
+    <!-- Illustration: trophy + stars -->
+    <svg class="sec-illus" viewBox="0 0 480 80" xmlns="http://www.w3.org/2000/svg">
+      <rect width="480" height="80" fill="#FFF8E1"/>
+      <!-- Trophy -->
+      <rect x="218" y="50" width="44" height="8" rx="3" fill="#FFB830"/>
+      <rect x="228" y="38" width="24" height="14" rx="2" fill="#FFB830"/>
+      <path d="M210,8 Q210,46 240,46 Q270,46 270,8 Z" fill="#FFD54F"/>
+      <path d="M210,14 Q196,14 196,28 Q196,40 210,40" stroke="#FFB830" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M270,14 Q284,14 284,28 Q284,40 270,40" stroke="#FFB830" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M225,8 L232,26 L218,16 L232,16 L225,26 Z" fill="#FF8F00" opacity=".6"/>
+      <!-- Stars scattered -->
+      <text x="80" y="42" font-size="26">⭐</text>
+      <text x="148" y="32" font-size="18">✨</text>
+      <text x="320" y="40" font-size="26">⭐</text>
+      <text x="390" y="30" font-size="18">✨</text>
+      <text x="430" y="48" font-size="22">⭐</text>
+      <text x="30" y="55" font-size="16">🎉</text>
+      <text x="440" y="68" font-size="14">🎊</text>
+      <text x="240" y="76" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="bold" fill="#F57F17">Mostre tudo que você aprendeu!</text>
+    </svg>
+    <div id="sim"></div>
+
+  </div><!-- /container -->
+  </div><!-- /content-col -->
+
+  <!-- DESKTOP SIDEBAR (hidden on mobile/tablet via CSS) -->
+  <div id="sidebar-col" style="display:none">
+    <div style="font-family:'Fredoka One',cursive;font-size:1rem;color:var(--purple);text-align:center">Seu progresso</div>
+    <div id="scorebar-side">
+      <div style="font-family:'Fredoka One',cursive;font-size:2.5rem;color:var(--sun);text-align:center" id="pts-side">0/0</div>
+      <div class="bar-track" style="margin-top:8px"><div class="bar-fill" id="bfill-side" style="width:0%"></div></div>
+      <div style="font-family:'Fredoka One',cursive;font-size:.9rem;color:var(--teal);text-align:center;margin-top:8px" id="name-side"></div>
+    </div>
+    <div id="lion-side" style="width:110px;height:110px;animation:lion-idle 3s ease-in-out infinite;-webkit-animation:lion-idle 3s ease-in-out infinite;"></div>
+    <div class="speech" id="speech-side" style="font-size:.88rem">Vamos arrasar! 🦁</div>
+    <div style="background:#F3E5F5;border-radius:14px;padding:12px 14px;width:100%;margin-top:4px">
+      <div style="font-family:'Fredoka One',cursive;font-size:.82rem;color:var(--purple);margin-bottom:8px">⚡ O essencial</div>
+      <div style="font-size:.8rem;font-weight:700;color:var(--sub);line-height:1.7">
+        👨‍👩‍👧 <strong style="color:var(--text)">Comunidade</strong> = pessoas que convivem juntas<br>
+        🏛️ <strong style="color:var(--text)">Espaço público</strong> = é de todo mundo<br>
+        🤝 <strong style="color:var(--text)">Cidadão</strong> = respeita e cuida
+      </div>
+    </div>
+  </div>
+
+<!-- RESULT -->
+<div id="result-screen">
+
+  <!-- SHARE CARD (screenshot area) -->
+  <div id="share-card">
+    <div class="card-lion-wrap">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="52" r="36" fill="#E65100"/><circle cx="50" cy="52" r="30" fill="#FF8F00"/>
+        <ellipse cx="22" cy="44" rx="10" ry="14" fill="#E65100" transform="rotate(-20 22 44)"/><ellipse cx="78" cy="44" rx="10" ry="14" fill="#E65100" transform="rotate(20 78 44)"/>
+        <ellipse cx="30" cy="28" rx="8" ry="12" fill="#BF360C" transform="rotate(-35 30 28)"/><ellipse cx="70" cy="28" rx="8" ry="12" fill="#BF360C" transform="rotate(35 70 28)"/>
+        <ellipse cx="50" cy="20" rx="9" ry="11" fill="#E65100"/>
+        <ellipse cx="50" cy="55" rx="24" ry="22" fill="#FFB74D"/>
+        <ellipse cx="41" cy="48" rx="5.5" ry="6" fill="#fff"/><ellipse cx="59" cy="48" rx="5.5" ry="6" fill="#fff"/>
+        <circle cx="42" cy="49" r="3.2" fill="#4E342E"/><circle cx="60" cy="49" r="3.2" fill="#4E342E"/>
+        <circle cx="43.5" cy="47.5" r="1.1" fill="#fff"/><circle cx="61.5" cy="47.5" r="1.1" fill="#fff"/>
+        <ellipse cx="50" cy="58" rx="7" ry="5" fill="#E64A19"/><ellipse cx="50" cy="57" rx="5" ry="3" fill="#FF7043"/>
+        <path d="M43 62 Q50 70 57 62" stroke="#5D4037" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <circle cx="27" cy="32" r="7" fill="#FF8F00"/><circle cx="27" cy="32" r="4" fill="#FFB74D"/>
+        <circle cx="73" cy="32" r="7" fill="#FF8F00"/><circle cx="73" cy="32" r="4" fill="#FFB74D"/>
+        <line x1="30" y1="60" x2="44" y2="59" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+        <line x1="30" y1="63" x2="44" y2="62" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+        <line x1="56" y1="59" x2="70" y2="60" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+        <line x1="56" y1="62" x2="70" y2="63" stroke="#5D4037" stroke-width="1.2" opacity=".6"/>
+      </svg>
+    </div>
+    <div class="res-subject-tag" id="res-subject-tag">História · Capítulo 4</div>
+    <h2 id="res-name">Parabéns!</h2>
+    <div class="result-grade" id="res-grade">10</div>
+    <div class="result-stars" id="res-stars">⭐⭐⭐⭐⭐</div>
+    <div class="result-subtitle" id="res-sub">Você arrasoooou! 🦁</div>
+    <div class="res-meta-row">
+      <span id="res-score-tag">17 de 17 questões</span>
+      <span id="res-date-tag"></span>
+    </div>
+    <div class="result-tag">Muitas Pessoas Juntas</div>
+  </div>
+
+  <!-- SHARE HINT + BUTTON -->
+  <div class="share-zone">
+    <p class="share-hint">📸 Prepare a câmera — esse resultado merece ser compartilhado!</p>
+    <div class="share-pulse" id="share-pulse">👆 Tire o print agora!</div>
+  </div>
+
+  <!-- BREAKDOWN POR SEÇÃO -->
+  <div class="breakdown-box">
+    <div class="breakdown-title">📊 Como você foi em cada parte</div>
+    <div id="breakdown-rows"></div>
+  </div>
+
+  <!-- MENSAGEM PERSONALIZADA -->
+  <div class="personal-msg-box" id="personal-msg-box">
+    <div class="personal-msg-icon">🦁</div>
+    <div id="personal-msg-text"></div>
+  </div>
+
+  <!-- REVISÃO DOS ERROS -->
+  <div id="review-box" style="display:none">
+    <div class="breakdown-title" style="margin-bottom:12px">🔍 O que revisar</div>
+    <div id="review-items"></div>
+  </div>
+
+  <!-- AÇÕES -->
+  <div class="result-actions">
+    <button class="restart-btn" onclick="restartGame()">🔄 Tentar de novo</button>
+  </div>
+
+</div>
+
+<!-- GLOBAL TOOLTIP -->
+<div id="tip-global"><strong id="tip-title"></strong><span id="tip-desc"></span></div>
+<div id="tip-arrow" style="position:fixed;z-index:9991;width:0;height:0;border:7px solid transparent;border-top-color:#3D1D8F;pointer-events:none;display:none;transform:translateX(-50%);-webkit-transform:translateX(-50%)"></div>
+
+<script>
+// ═══ AUDIO ═══
+var ac=null,audioUnlocked=false;
+function getAC(){if(!ac){var C=window.AudioContext||window.webkitAudioContext;if(C)ac=new C();}return ac;}
+function unlockAudio(){var a=getAC();if(!a)return;var b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0);if(a.state==='suspended')a.resume();audioUnlocked=true;document.getElementById('sound-banner').classList.add('hidden');}
+document.addEventListener('touchstart',function onT(){if(!audioUnlocked)unlockAudio();document.removeEventListener('touchstart',onT);},{once:true,passive:true});
+function tone(f1,f2,type,vol,dur){var a=getAC();if(!a)return;if(a.state==='suspended')a.resume();try{var o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.type=type;o.frequency.setValueAtTime(f1,a.currentTime);if(f2)o.frequency.setValueAtTime(f2,a.currentTime+dur*.4);g.gain.setValueAtTime(vol,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+dur);o.start();o.stop(a.currentTime+dur);}catch(e){}}
+function playOk(){tone(440,660,'sine',.16,.35);}
+function playWrong(){tone(250,180,'sawtooth',.12,.3);}
+function playFinish(){var a=getAC();if(!a)return;if(a.state==='suspended')a.resume();[[0,523],[.1,659],[.2,784],[.35,1047],[.5,784],[.65,1047]].forEach(function(p){try{var o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.type='sine';o.frequency.value=p[1];g.gain.setValueAtTime(.16,a.currentTime+p[0]);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+p[0]+.28);o.start(a.currentTime+p[0]);o.stop(a.currentTime+p[0]+.3);}catch(e){}});}
+
+// ═══ LION ═══
+var lionSt='idle';
+var lines={idle:['Vamos aprender juntos! 🌍','Você consegue! 💪','Pensa bem antes de responder! 🤔','Estou torcendo por você! 🦁'],correct:['Isso aí! Mandou bem! 🎉','Arrasou! Continua assim! ⭐','Boa demais! 🥳','Perfeito! Você é incrível! 🦁'],wrong:['Quase! Não desanima! 💪','Errar faz parte do aprendizado! 🌱','Leia o raciocínio e entenda! 📚','Você aprende com isso! 🤗']};
+function setLion(st,custom){
+  lionSt=st;
+  var l=document.getElementById('lion'),b=document.getElementById('speech');
+  if(!l||!b)return;
+  l.className='lion '+(st==='idle'?'':st);
+  var pool=lines[st]||lines.idle;
+  b.textContent=custom||pool[Math.floor(Math.random()*pool.length)];
+}
+function buildLion(){
+  var l=document.getElementById('lion');
+  if(!l)return;
+  var tpl=document.getElementById('lion-tpl');
+  if(tpl)l.appendChild(tpl.content.cloneNode(true));
+  setInterval(function(){
+    if(lionSt!=='celebrate'){
+      var pl=document.getElementById('pl'),pr=document.getElementById('pr');
+      if(!pl||!pr)return;
+      pl.setAttribute('ry','0.4');pr.setAttribute('ry','0.4');
+      setTimeout(function(){pl.setAttribute('ry','3.5');pr.setAttribute('ry','3.5');},130);
+    }
+  },3800);
+}
+
+// ═══ CONFETTI ═══
+function confetti(){var colors=['#7C4DFF','#FFB830','#4FC3F7','#FF6B9D','#66BB6A','#FFD54F'];for(var i=0;i<40;i++){(function(){var el=document.createElement('div');el.className='cp';var dur=(0.9+Math.random()*1.3).toFixed(2)+'s',tx=((Math.random()-.5)*240).toFixed(0)+'px',rot=(Math.random()*720).toFixed(0)+'deg',sz=(6+Math.random()*9).toFixed(0)+'px';el.style.cssText='left:'+Math.random()*100+'vw;background:'+colors[Math.floor(Math.random()*colors.length)]+';--d:'+dur+';--tx:'+tx+';--rot:'+rot+';width:'+sz+';height:'+sz+';animation-delay:'+(Math.random()*.5).toFixed(2)+'s';document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},2800);})();}}
+
+// ═══ STATE ═══
+var playerName='';
+var state={};
+var answered=0,correct=0;
+var TOTAL=3+3+2+4+1+4; // 17
+
+function updateScore(){
+  var txt=correct+'/'+answered;
+  document.getElementById('pts').textContent=txt;
+  document.getElementById('bfill').style.width=(answered/TOTAL*100)+'%';
+  var ps=document.getElementById('pts-side');
+  var bs=document.getElementById('bfill-side');
+  if(ps)ps.textContent=txt;
+  if(bs)bs.style.width=(answered/TOTAL*100)+'%';
+}
+function registerAnswer(ok){answered++;if(ok)correct++;if(ok){playOk();setLion('celebrate');}else{playWrong();setLion('wrong');}setTimeout(function(){setLion('idle');},1900);updateScore();if(answered===TOTAL)setTimeout(showResult,700);}
+
+// ═══ NAME ═══
+document.getElementById('name-input').addEventListener('keydown',function(e){if(e.key==='Enter')startGame();});
+function startGame(){
+  var n=document.getElementById('name-input').value.trim()||'Aventureiro';
+  playerName=n;
+  document.getElementById('name-screen').style.display='none';
+  document.getElementById('main-content').style.display='block';
+  document.getElementById('student-name-bar').textContent=n+' 🦁';
+  var td=document.getElementById('topic-name-display');if(td)td.textContent=n;
+  var ns=document.getElementById('name-side');if(ns)ns.textContent=n+' 🦁';
+  // clone lion into sidebar
+  var ls=document.getElementById('lion-side');
+  if(ls){var tpl=document.getElementById('lion-tpl');if(tpl)ls.appendChild(tpl.content.cloneNode(true));}
+  buildLion();
+  setLion('idle','Oi, '+n+'! Bora aprender! 🌍');
+  renderAll();
+}
+
+// ═══ DATA ═══
+var p1Data=[
+  {q:'O que é uma comunidade?',opts:['Um lugar onde as pessoas vivem sozinhas e isoladas.','Um grupo de pessoas que convivem em um mesmo lugar.','Uma comunidade é apenas a família.'],answer:1,
+   explain:['Uma comunidade envolve <strong>convivência</strong> — pessoas que se relacionam, não que vivem isoladas.','A família é apenas <em>um tipo</em> de comunidade. Escola, bairro e cidade também são comunidades.','A resposta certa diz que é um grupo de pessoas que <strong>convivem em um mesmo lugar</strong>.']},
+  {q:'Por que as regras são importantes para uma comunidade?',opts:['Servem apenas para punir quem erra.','Ajudam a organizar a convivência e o respeito entre todos.','Não precisam ser respeitadas.'],answer:1,
+   explain:['Regras não existem para punir — existem para <strong>organizar a vida em grupo</strong>.','Sem regras, seria impossível conviver bem: cada um faria o que quisesse sem respeitar os outros.','A resposta certa mostra que regras têm uma <strong>função positiva</strong>: organizar e criar respeito.']},
+  {q:'O que significa cooperar?',opts:['Competir para ganhar sempre.','Trabalhar junto e ajudar os outros para um bem comum.','Ficar sozinho e resolver tudo sem pedir ajuda.'],answer:1,
+   explain:['Cooperar é o oposto de competir — é <strong>agir juntos</strong>, não um contra o outro.','Ficar sozinho e não pedir ajuda é autossuficiência, não cooperação.','Cooperar vem do latim <em>co + operare</em>: trabalhar <strong>com</strong> os outros.']},
+];
+
+var p2Data=[
+  {q:'Quais destes são exemplos de espaços públicos?',opts:['Praça','Escola','Parque','Todos os anteriores'],answer:3,
+   explain:['Praça, escola e parque são todos espaços públicos — pertencem a <strong>toda a comunidade</strong>, não a uma pessoa só.','A resposta certa é "Todos os anteriores" porque cada um desses lugares é de uso de todos.']},
+  {q:'Por que devemos cuidar dos espaços públicos?',opts:['Porque são de uma única pessoa e ela pediu.','Porque pertencem a todos e precisam ser preservados para o bem de toda a comunidade.','Porque só o governo usa esses lugares.'],answer:1,
+   explain:['Espaços públicos <strong>não pertencem a ninguém individualmente</strong> — são de toda a coletividade.','O governo cuida, mas a responsabilidade de preservar é de <strong>todos os cidadãos</strong>.','Cuidar do que é público é um dever de cidadania.']},
+  {q:'Qual atitude demonstra cidadania?',opts:['Jogar lixo na rua porque todo mundo faz.','Respeitar as diferenças culturais e cuidar dos espaços comuns.','Ignorar as regras quando ninguém está vendo.'],answer:1,
+   explain:['"Todo mundo faz" não justifica uma atitude errada — <strong>cidadania começa por você</strong>.','Ignorar regras quando não está sendo observado mostra que a pessoa não internalizou os valores da convivência.','Cidadania é agir bem <strong>sempre</strong>, não só quando alguém está olhando.']},
+];
+
+var p3Data=[
+  {prefix:'Para viver bem em grupo devemos ter',answer:'respeito',suffix:'pelas outras pessoas.',hint:'respeito',
+   explain:'Respeito é a base de qualquer convivência. Sem ele, não há comunidade — há apenas conflito.'},
+  {prefix:'Resolver conflitos com',answer:'diálogo',suffix:'é a forma mais inteligente de conviver.',hint:'diálogo',
+   explain:'Diálogo vem do grego: <em>dia</em> (através) + <em>logos</em> (palavra). É resolver com conversa, não com briga.'},
+];
+
+var p4Data=[
+  {q:'Todas as pessoas possuem os mesmos costumes e tradições.',answer:false,
+   explain:'As pessoas têm origens, religiões e culturas <strong>diferentes</strong> — isso é o que torna a comunidade rica e diversa.'},
+  {q:'Devemos respeitar as diferenças entre as pessoas.',answer:true,
+   explain:'Correto! Respeitar as diferenças é o fundamento da <strong>cidadania</strong> e da convivência harmoniosa.'},
+  {q:'Cuidar dos espaços públicos é responsabilidade de todos.',answer:true,
+   explain:'Correto! Espaços públicos pertencem a todos, então cuidar deles também é responsabilidade de todos.'},
+  {q:'O diálogo é uma boa forma de resolver conflitos.',answer:true,
+   explain:'Correto! O diálogo evita que desentendimentos se tornem brigas — é a ferramenta mais poderosa da convivência.'},
+];
+
+var matchData={
+  left:['Família','Escola','Praça'],
+  right:['Espaço público para lazer','Lugar onde aprendemos','Grupo formado por parentes'],
+  pairs:{Família:'Grupo formado por parentes',Escola:'Lugar onde aprendemos',Praça:'Espaço público para lazer'}
+};
+
+var simData=[
+  {q:'Quando respeitamos as diferenças entre as pessoas, estamos demonstrando:',opts:['Briga e discórdia.','Cidadania e respeito.','Descaso com o outro.'],answer:1,
+   explain:['Respeitar diferenças é o oposto de brigar — é <strong>aceitar que cada pessoa tem sua história</strong>.','Cidadania significa agir como um bom membro da comunidade, e isso começa pelo respeito às diferenças.']},
+  {q:'O que devemos fazer com os espaços públicos?',opts:['Sujar e estragar porque não são meus.','Preservar e cuidar para que todos possam usar.','Ignorar, pois não são meus.'],answer:1,
+   explain:['"Não são meus" é um pensamento que destrói a comunidade. Espaços públicos <strong>são de todos</strong>, incluindo você.','Preservar é garantir que as próximas gerações também possam usar esses espaços.']},
+  {q:'Qual atitude ajuda na boa convivência em comunidade?',opts:['Gritar e não ouvir o outro.','Dialogar e respeitar o próximo.','Não seguir nenhuma regra.'],answer:1,
+   explain:['Gritar impede que o outro se expresse — a convivência exige <strong>escuta</strong>, não só fala.','Sem regras, cada um age por impulso e o resultado é caos, não comunidade.','Dialogar + respeitar = a fórmula da boa convivência.']},
+  {q:'A diversidade de culturas e tradições em uma comunidade é:',opts:['Um problema a ser evitado.','Uma riqueza que deve ser respeitada e celebrada.','Algo sem importância para a convivência.'],answer:1,
+   explain:['Diversidade enriquece — cada cultura traz algo que as outras não têm.','Ignorar a diversidade empobrece a comunidade e gera exclusão.','Celebrar as diferenças é o caminho para uma comunidade mais forte e justa.']},
+];
+
+// ═══ TRADUTOR — dicionário de palavras difíceis ═══
+var dicio={
+  'comunidade':   {s:'Comunidade',     d:'Um grupo de pessoas que moram ou convivem no mesmo lugar.'},
+  'convivência':  {s:'Convivência',    d:'Viver junto com outras pessoas, dividindo espaços e momentos.'},
+  'cooperar':     {s:'Cooperar',       d:'Trabalhar junto com os outros para ajudar ou resolver algo.'},
+  'cooperação':   {s:'Cooperação',     d:'Quando várias pessoas trabalham juntas pelo mesmo objetivo.'},
+  'cidadania':    {s:'Cidadania',      d:'Agir com respeito e responsabilidade como membro da sociedade.'},
+  'preservar':    {s:'Preservar',      d:'Cuidar para que algo não seja estragado ou destruído.'},
+  'diversidade':  {s:'Diversidade',    d:'Quando existem pessoas com costumes, culturas e tradições diferentes.'},
+  'espaço público':{s:'Espaço público',d:'Lugar que pertence a todos, como praça, escola e parque.'},
+  'conflito':     {s:'Conflito',       d:'Uma briga ou desentendimento entre pessoas.'},
+  'diálogo':      {s:'Diálogo',        d:'Conversar para resolver problemas ou entender melhor algo.'},
+  'responsabilidade':{s:'Responsabilidade',d:'Cumprir o que é seu dever fazer.'},
+  'harmoniosa':   {s:'Harmoniosa',     d:'Quando as coisas funcionam bem, sem brigas ou problemas.'},
+};
+
+function wrapTips(text){
+  var result=text;
+  Object.keys(dicio).forEach(function(word){
+    var re=new RegExp('('+word+')', 'gi');
+    result=result.replace(re,function(m){
+      var key=m.toLowerCase();
+      var info=dicio[key]||dicio[word];
+      if(!info)return m;
+      return '<span class="tip" data-tip="'+word+'" onclick="showTip(this,event)">'+m+'</span>';
+    });
+  });
+  return result;
+}
+
+var tipOpen=null;
+function showTip(el,e){
+  e.stopPropagation();
+  var box=document.getElementById('tip-global');
+  var arr=document.getElementById('tip-arrow');
+  if(tipOpen===el){hideTip();return;}
+  tipOpen=el;
+  var word=el.dataset.tip;
+  var info=null;
+  Object.keys(dicio).forEach(function(k){if(k.toLowerCase()===word.toLowerCase())info=dicio[k];});
+  if(!info){hideTip();return;}
+  document.getElementById('tip-title').textContent=info.s;
+  document.getElementById('tip-desc').textContent=info.d;
+
+  // show box first to measure height
+  box.style.visibility='hidden';
+  box.classList.add('show');
+  var W=window.innerWidth;
+  var tipW=Math.min(220,W-28);
+  box.style.width=tipW+'px';
+  var boxH=box.offsetHeight;
+
+  var rect=el.getBoundingClientRect();
+  var anchorMid=rect.left+rect.width/2;
+
+  // prefer above, fall back to below
+  var below=false;
+  var top=rect.top-boxH-12;
+  if(top<8){top=rect.bottom+12;below=true;}
+
+  // clamp horizontally
+  var left=Math.max(14,Math.min(anchorMid-tipW/2, W-tipW-14));
+
+  box.style.top=top+'px';
+  box.style.left=left+'px';
+  box.style.visibility='';
+
+  // position arrow
+  var arrowX=anchorMid; // center on word
+  var arrowY=below?top-7:top+boxH;
+  arr.style.left=arrowX+'px';
+  arr.style.top=arrowY+'px';
+  arr.style.borderTopColor=below?'transparent':'#3D1D8F';
+  arr.style.borderBottomColor=below?'#3D1D8F':'transparent';
+  arr.style.display='block';
+}
+function hideTip(){
+  tipOpen=null;
+  document.getElementById('tip-global').classList.remove('show');
+  document.getElementById('tip-arrow').style.display='none';
+}
+document.addEventListener('click',function(){hideTip();});
+document.addEventListener('touchstart',function(e){
+  if(!e.target.closest('.tip'))hideTip();
+},{passive:true});
+
+// ═══ METACOGNIÇÃO ═══
+var metaResponses={
+  g:['Incrível! Confiança é o primeiro passo! 🌟','Arrasou! Sente-se bem é sinal de aprendizado! 🦁','Ótimo! Esse conteúdo entrou na sua cabeça! 🎉'],
+  y:['Tudo bem! Revisar é parte do aprendizado! 📚','Normal! Cada revisão deixa mais claro! 🌱','Que honesto! Continue praticando! 💪'],
+  r:['Boa percepção! Releia o resumo com calma. 📖','Não desanima! Faz parte. O leãozinho acredita em você! 🦁','Reconhecer que não entendeu é muito inteligente! Revise! 🔍'],
+};
+function answerMeta(btn, type, respId){
+  var wrap=btn.closest('.meta-wrap');
+  wrap.querySelectorAll('.meta-btn').forEach(function(b){b.classList.add('meta-done');b.classList.remove('meta-selected');});
+  btn.classList.add('meta-selected');
+  var pool=metaResponses[type];
+  var resp=document.getElementById(respId);
+  resp.textContent=pool[Math.floor(Math.random()*pool.length)];
+  resp.style.display='block';
+}
+
+function mkMeta(id){
+  return '<div class="meta-wrap">'
+    +'<div class="meta-label">Como você se sentiu com essa resposta?</div>'
+    +'<div class="meta-row">'
+    +'<button class="meta-btn g" onclick="answerMeta(this,\'g\',\'mr-'+id+'\')">🟢 Entendi bem</button>'
+    +'<button class="meta-btn y" onclick="answerMeta(this,\'y\',\'mr-'+id+'\')">🟡 Mais ou menos</button>'
+    +'<button class="meta-btn r" onclick="answerMeta(this,\'r\',\'mr-'+id+'\')">🔴 Não entendi</button>'
+    +'</div>'
+    +'<div class="meta-response" id="mr-'+id+'"></div>'
+    +'</div>';
+}
+
+// ═══ RENDER ═══
+function mkCard(html){var d=document.createElement('div');d.className='card';d.innerHTML=html;return d;}
+function qHead(n,t){
+  // number stays inline-flex, text flows normally after it
+  return '<div class="q-text"><span class="qnum">'+n+'</span>'+wrapTips(t)+'</div>';
+}
+
+function mkExplainBox(steps,id){
+  var html='<div class="error-explain" id="ee-'+id+'"><div class="ee-title">🧠 Por que a resposta certa é essa?</div>';
+  steps.forEach(function(s,i){html+='<div class="ee-step"><div class="ee-num">'+(i+1)+'</div><div class="ee-text">'+s+'</div></div>';});
+  html+='</div>';
+  return html;
+}
+
+function showExplain(id){var el=document.getElementById('ee-'+id);if(el)el.classList.add('show');}
+
+// MC generic
+function answerMC(prefix,qi,oi,data){
+  var key=prefix+qi;if(state[key])return;state[key]=true;
+  var q=data[qi];var ok=oi===q.answer;
+  q.opts.forEach(function(_,idx){
+    var b=document.getElementById(prefix+'-'+qi+'-'+idx);if(!b)return;
+    b.classList.add('disabled');
+    if(idx===q.answer)b.classList.add('correct');
+    else if(idx===oi&&!ok)b.classList.add('wrong');
+  });
+  if(sectionScores[prefix]&&ok) sectionScores[prefix].correct++;
+  if(!ok){
+    showExplain(prefix+qi);
+    if(sectionScores[prefix]) wrongAnswers.push({section:sectionScores[prefix].label, q:q.q, a:q.opts[q.answer]});
+  }
+  var mw=document.getElementById('meta-'+prefix+qi);
+  if(mw)mw.style.display='block';
+  registerAnswer(ok);
+}
+// expose wrappers
+function aMC1(qi,oi){answerMC('p1',qi,oi,p1Data);}
+function aMC2(qi,oi){answerMC('p2',qi,oi,p2Data);}
+function aMCsim(qi,oi){answerMC('sim',qi,oi,simData);}
+
+function renderMCSection(cid,data,prefix,fn){
+  var c=document.getElementById(cid);
+  data.forEach(function(q,i){
+    var opts=q.opts.map(function(o,oi){
+      return '<button class="opt-btn" id="'+prefix+'-'+i+'-'+oi+'" onclick="'+fn+'('+i+','+oi+')">'
+            +'<span class="oletter">'+['A','B','C','D'][oi]+'</span>'
+            +'<span class="opt-btn-text">'+wrapTips(o)+'</span>'
+            +'</button>';
+    }).join('');
+    var explain=q.explain?mkExplainBox(q.explain,prefix+i):'';
+    var metaDiv='<div id="meta-'+prefix+i+'" style="display:none">'+mkMeta(prefix+i)+'</div>';
+    c.appendChild(mkCard(qHead(i+1,q.q)+'<div class="opts">'+opts+'</div>'+explain+metaDiv));
+  });
+}
+
+function renderP3(){
+  var c=document.getElementById('p3');
+  p3Data.forEach(function(q,i){
+    var id='f'+i;
+    var explain=q.explain?'<div class="error-explain" id="ee-'+id+'"><div class="ee-title">🧠 Entenda:</div><div class="ee-step"><div class="ee-num">💡</div><div class="ee-text">'+q.explain+'</div></div></div>':'';
+    c.appendChild(mkCard(
+      qHead(i+1,'Complete a frase:')
+      +'<div class="fill-wrap">'
+      +'<span style="font-weight:600;color:var(--sub)">'+q.prefix+'</span>'
+      +'<input class="fill-input" id="'+id+'-in" placeholder="___" maxlength="20" autocomplete="off" autocorrect="off" onkeydown="if(event.key===\'Enter\')checkFill('+i+')">'
+      +'<span style="font-weight:600;color:var(--sub)">'+q.suffix+'</span>'
+      +'<button class="chk-btn" id="'+id+'-btn" onclick="checkFill('+i+')">OK ✓</button>'
+      +'<span class="fb" id="'+id+'-fb"></span>'
+      +'</div>'+explain
+    ));
+  });
+}
+function normalize(s){return s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+function checkFill(i){
+  var id='f'+i;if(state[id])return;
+  var inp=document.getElementById(id+'-in');if(!inp.value.trim())return;
+  state[id]=true;
+  var ok=normalize(inp.value)===normalize(p3Data[i].answer);
+  inp.classList.add(ok?'correct':'wrong');inp.disabled=true;
+  document.getElementById(id+'-btn').classList.add('disabled');
+  document.getElementById(id+'-fb').textContent=ok?'🎉':'❌ ('+p3Data[i].answer+')';
+  if(ok){sectionScores.p3.correct++;}
+  else{showExplain(id);wrongAnswers.push({section:'✏️ Complete as Frases',q:p3Data[i].prefix+' ___ '+p3Data[i].suffix,a:p3Data[i].answer});}
+  registerAnswer(ok);
+}
+
+function renderP4(){
+  var c=document.getElementById('p4');
+  var inner='<div class="q-text"><span class="qnum">★</span>Marque Verdadeiro ou Falso:</div><div id="tf-wrap" style="display:flex;flex-direction:column;gap:18px"></div>';
+  c.appendChild(mkCard(inner));
+  var wrap=document.getElementById('tf-wrap');
+  p4Data.forEach(function(q,i){
+    var explain=q.explain?'<div class="error-explain" id="ee-tf'+i+'"><div class="ee-title">🧠 Entenda:</div><div class="ee-step"><div class="ee-num">💡</div><div class="ee-text">'+q.explain+'</div></div></div>':'';
+    var row=document.createElement('div');
+    row.innerHTML='<div class="tf-label">'+q.q+'</div>'
+      +'<div class="tf-row">'
+      +'<button class="tf-btn v" id="tf-'+i+'-t" onclick="aTF('+i+',true)">✅ Verdadeiro</button>'
+      +'<button class="tf-btn f" id="tf-'+i+'-f" onclick="aTF('+i+',false)">❌ Falso</button>'
+      +'</div>'+explain;
+    wrap.appendChild(row);
+  });
+}
+function aTF(i,chosen){
+  if(state['tf'+i])return;state['tf'+i]=true;
+  var ok=chosen===p4Data[i].answer;
+  var bt=document.getElementById('tf-'+i+'-t'),bf=document.getElementById('tf-'+i+'-f');
+  bt.classList.add('disabled');bf.classList.add('disabled');
+  (p4Data[i].answer?bt:bf).classList.add('correct');
+  if(!ok){
+    (chosen?bt:bf).classList.add('wrong');
+    showExplain('tf'+i);
+    wrongAnswers.push({section:'☑️ Verdadeiro ou Falso', q:p4Data[i].q, a:p4Data[i].answer?'Verdadeiro':'Falso'});
+  } else {
+    sectionScores.p4.correct++;
+  }
+  registerAnswer(ok);
+}
+
+var matchSel=null,matchDone=false,matchOk=0;
+function renderP5(){
+  var c=document.getElementById('p5');
+  var card=mkCard('<div class="q-text"><span class="qnum">🔗</span>Toque em um grupo da esquerda, depois na descrição correta à direita:</div>'+'<div class="match-wrap"><div class="match-col"><h4>Grupo</h4><div id="ml"></div></div><div class="match-col"><h4>Descrição</h4><div id="mr"></div></div></div>'+'<div id="mfb" style="margin-top:10px;font-weight:700;font-size:.9rem;color:var(--correct)"></div>');
+  c.appendChild(card);
+  var shuffled=matchData.right.slice().sort(function(){return Math.random()-.5;});
+  matchData.left.forEach(function(item,i){var el=document.createElement('div');el.className='match-item';el.id='ml-'+i;el.textContent=item;el.onclick=function(){selL(i);};document.getElementById('ml').appendChild(el);});
+  shuffled.forEach(function(item,i){var el=document.createElement('div');el.className='match-item';el.id='mr-'+i;el.textContent=item;el.dataset.val=item;el.onclick=function(){selR(i);};document.getElementById('mr').appendChild(el);});
+}
+function selL(i){if(matchDone)return;document.querySelectorAll('[id^="ml-"]').forEach(function(e){e.classList.remove('selected');});matchSel=i;document.getElementById('ml-'+i).classList.add('selected');}
+function selR(i){
+  if(matchDone||matchSel===null)return;
+  var lItem=matchData.left[matchSel],rEl=document.getElementById('mr-'+i),ok=matchData.pairs[lItem]===rEl.dataset.val,lEl=document.getElementById('ml-'+matchSel);
+  if(ok){lEl.classList.remove('selected');lEl.classList.add('matched','disabled');rEl.classList.add('matched','disabled');matchOk++;playOk();setLion('celebrate');setTimeout(function(){setLion('idle');},1900);
+    if(matchOk===matchData.left.length){matchDone=true;state['match']=true;sectionScores.p5.correct=1;answered++;correct++;document.getElementById('mfb').textContent='🎉 Perfeito, '+playerName+'!';updateScore();if(answered===TOTAL)setTimeout(showResult,700);}}
+  else{lEl.classList.remove('selected');rEl.classList.add('wrong-match');setTimeout(function(){rEl.classList.remove('wrong-match');},500);playWrong();setLion('wrong');setTimeout(function(){setLion('idle');},1900);}
+  matchSel=null;
+}
+
+function renderSim(){
+  var c=document.getElementById('sim');
+  simData.forEach(function(q,i){
+    var opts=q.opts.map(function(o,oi){
+      return '<button class="opt-btn" id="sim-'+i+'-'+oi+'" onclick="aMCsim('+i+','+oi+')">'
+            +'<span class="oletter">'+['A','B','C'][oi]+'</span>'
+            +'<span class="opt-btn-text">'+wrapTips(o)+'</span>'
+            +'</button>';
+    }).join('');
+    var explain=q.explain?mkExplainBox(q.explain,'sim'+i):'';
+    var metaDiv='<div id="meta-sim'+i+'" style="display:none">'+mkMeta('sim'+i)+'</div>';
+    c.appendChild(mkCard(qHead(i+1,q.q)+'<div class="opts">'+opts+'</div>'+explain+metaDiv));
+  });
+}
+
+function renderAll(){
+  renderMCSection('p1',p1Data,'p1','aMC1');
+  renderMCSection('p2',p2Data,'p2','aMC2');
+  renderP3();renderP4();renderP5();renderSim();updateScore();
+}
+
+// ═══ RESULT ═══
+// Track per-section scores and wrong answers
+var sectionScores = {
+  p1:{label:'🏘️ Comunidade',total:3,correct:0},
+  p2:{label:'🏛️ Espaços Públicos',total:3,correct:0},
+  p3:{label:'✏️ Complete as Frases',total:2,correct:0},
+  p4:{label:'☑️ Verdadeiro ou Falso',total:4,correct:0},
+  p5:{label:'🔗 Ligar os Grupos',total:1,correct:0},
+  sim:{label:'🎯 Simulado Final',total:4,correct:0},
+};
+var wrongAnswers = []; // {section, question, correct}
+
+function showResult(){
+  document.getElementById('main-content').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+
+  var pct=correct/TOTAL;
+  var grade,sub,stars;
+  if(pct>=.9){grade='10';sub='Você arrasou! Orgulho total! 🏆';stars='⭐⭐⭐⭐⭐';}
+  else if(pct>=.75){grade='8';sub='Muito bem! Quase perfeito! 🎯';stars='⭐⭐⭐⭐';}
+  else if(pct>=.6){grade='6';sub='Bom trabalho! Continue praticando! 💪';stars='⭐⭐⭐';}
+  else{grade='5';sub='Não desanima! Revise e tente de novo! 📚';stars='⭐⭐';}
+
+  // share card
+  document.getElementById('res-name').textContent='Parabéns, '+playerName+'!';
+  document.getElementById('res-grade').textContent=grade;
+  document.getElementById('res-sub').textContent=sub;
+  document.getElementById('res-stars').textContent=stars;
+  document.getElementById('res-score-tag').textContent=correct+' de '+TOTAL+' questões';
+  var now=new Date();
+  document.getElementById('res-date-tag').textContent=now.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});
+
+  // breakdown rows
+  var bdWrap=document.getElementById('breakdown-rows');
+  bdWrap.innerHTML='';
+  var sections=['p1','p2','p3','p4','p5','sim'];
+  sections.forEach(function(key){
+    var s=sectionScores[key];
+    var pctS=s.total>0?s.correct/s.total:0;
+    var color=pctS>=.75?'#43A047':pctS>=.5?'#FFB830':'#E53935';
+    var row=document.createElement('div');
+    row.className='bd-row';
+    row.innerHTML='<span class="bd-label">'+s.label+'</span>'
+      +'<div class="bd-bar-track"><div class="bd-bar-fill" style="width:0%;background:'+color+'" data-pct="'+(pctS*100).toFixed(0)+'"></div></div>'
+      +'<span class="bd-count" style="color:'+color+'">'+s.correct+'/'+s.total+'</span>';
+    bdWrap.appendChild(row);
+  });
+  // animate bars after paint
+  setTimeout(function(){
+    document.querySelectorAll('.bd-bar-fill').forEach(function(el){
+      el.style.width=el.dataset.pct+'%';
+    });
+  },120);
+
+  // personal message
+  var bestSection='', bestPct=0, worstSection='', worstPct=1;
+  sections.forEach(function(key){
+    var s=sectionScores[key];
+    if(s.total===0)return;
+    var p=s.correct/s.total;
+    if(p>bestPct){bestPct=p;bestSection=s.label;}
+    if(p<worstPct){worstPct=p;worstSection=s.label;}
+  });
+  var msgBox=document.getElementById('personal-msg-text');
+  var msg='';
+  if(pct>=.9){
+    msg='<strong>'+playerName+', você foi incrível hoje!</strong> Acertou '+correct+' de '+TOTAL+' questões. Você mostrou que entende muito bem sobre comunidade e convivência. Continue assim! 🌟';
+  } else if(pct>=.75){
+    msg='<strong>Muito bem, '+playerName+'!</strong> Você foi especialmente bem em <strong>'+bestSection+'</strong>. '+(worstPct<1?'Que tal revisar um pouco mais <strong>'+worstSection+'</strong>? Com mais um pouquinho de prática, você chega no 10!':'');
+  } else if(pct>=.6){
+    msg='<strong>Bom esforço, '+playerName+'!</strong> Você foi bem em <strong>'+bestSection+'</strong>. Recomendo reler o resumo sobre <strong>'+worstSection+'</strong> antes de tentar de novo. Você consegue melhorar! 💪';
+  } else {
+    msg='<strong>Não desanima, '+playerName+'!</strong> Aprender leva tempo e tentativas. Volte para o resumo no início, leia com calma, e tente de novo. O leãozinho acredita em você! 🦁';
+  }
+  msgBox.innerHTML=msg;
+
+  // review wrong answers
+  var revBox=document.getElementById('review-box');
+  var revItems=document.getElementById('review-items');
+  revItems.innerHTML='';
+  if(wrongAnswers.length>0){
+    revBox.style.display='block';
+    wrongAnswers.forEach(function(w){
+      var item=document.createElement('div');
+      item.className='review-item';
+      item.innerHTML='<strong>'+w.section+'</strong>'+w.q+(w.a?'<br>✅ Resposta certa: <em>'+w.a+'</em>':'');
+      revItems.appendChild(item);
+    });
+  } else {
+    revBox.style.display='none';
+  }
+
+  // share pulse animation — blink 3x then stop
+  var pulse=document.getElementById('share-pulse');
+  var blinks=0;
+  var blinkInt=setInterval(function(){
+    pulse.style.opacity=pulse.style.opacity==='0.4'?'1':'0.4';
+    blinks++;if(blinks>5){clearInterval(blinkInt);pulse.style.opacity='1';}
+  },400);
+
+  confetti();playFinish();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function restartGame(){
+  state={};answered=0;correct=0;matchSel=null;matchDone=false;matchOk=0;
+  wrongAnswers=[];
+  sectionScores={
+    p1:{label:'🏘️ Comunidade',total:3,correct:0},
+    p2:{label:'🏛️ Espaços Públicos',total:3,correct:0},
+    p3:{label:'✏️ Complete as Frases',total:2,correct:0},
+    p4:{label:'☑️ Verdadeiro ou Falso',total:4,correct:0},
+    p5:{label:'🔗 Ligar os Grupos',total:1,correct:0},
+    sim:{label:'🎯 Simulado Final',total:4,correct:0},
+  };
+  ['p1','p2','p3','p4','p5','sim'].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML='';});
+  var tf=document.getElementById('tf-wrap');if(tf)tf.innerHTML='';
+  var ml=document.getElementById('ml'),mr=document.getElementById('mr');if(ml)ml.innerHTML='';if(mr)mr.innerHTML='';
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('main-content').style.display='block';
+  setLion('idle','Vamos lá de novo, '+playerName+'! 💪');
+  renderAll();window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
