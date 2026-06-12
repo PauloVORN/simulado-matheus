@@ -1395,11 +1395,12 @@ var sectionScores = {
 var wrongAnswers = []; // {section, question, correct}
 
 function showResult(){
-  // Esconde só o conteúdo do quiz, não o main-content inteiro
   document.getElementById('quiz-content').style.display='none';
   var rs=document.getElementById('result-screen');
   rs.classList.remove('active');
   rs.style.display='block';
+  // scroll para o topo do resultado
+  setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});},50);
 
   var pct=correct/TOTAL;
   var grade,sub,stars,cardTitle;
